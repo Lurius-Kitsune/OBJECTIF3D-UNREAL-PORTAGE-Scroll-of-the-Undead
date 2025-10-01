@@ -4,28 +4,16 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
-#include "Map/TileInfo.h"
-#include "Tile.generated.h"
-
+#include "LevelMapBuilder.generated.h"
 
 UCLASS()
-class REVISIONP2_API ATile : public AActor
+class REVISIONP2_API ALevelMapBuilder : public AActor
 {
 	GENERATED_BODY()
-
-protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	TObjectPtr<UStaticMeshComponent> sprite;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FTileInfo tileInfo;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool isWarp = false;
-
+	
 public:	
 	// Sets default values for this actor's properties
-	ATile();
+	ALevelMapBuilder();
 
 protected:
 	// Called when the game starts or when spawned
