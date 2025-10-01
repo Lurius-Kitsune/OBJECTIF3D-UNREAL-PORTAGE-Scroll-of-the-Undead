@@ -27,7 +27,7 @@ protected:
 	int hitPoints = 200;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int currentHitPoints = 200;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UBoxComponent> attackHitbox;
 
 public:

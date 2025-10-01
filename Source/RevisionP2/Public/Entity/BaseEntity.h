@@ -34,43 +34,43 @@ class REVISIONP2_API ABaseEntity : public APawn
 	GENERATED_BODY()
 
 protected:
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FString name = "BaseEntity";
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EEntityType type = EEntityType::Base;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	int id = 0;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector2D position = FVector2D::ZeroVector;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector2D positionOld = FVector2D::ZeroVector;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector2D velocity = FVector2D::ZeroVector;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector2D maxVelocity = FVector2D(1000.0f, 1000.0f);
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector2D speed = FVector2D(400.0f, 800.0f);
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector2D acceleration = FVector2D(2000.0f, 0.0f);
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector2D friction = FVector2D(800.0f, 0.0f);
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	EEntityState state = EEntityState::Idle;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UBoxComponent> hitbox;
 
 	//Sounds
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sounds")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sounds")
 	TSoftObjectPtr<USoundBase> attackSound;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sounds")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sounds")
 	TSoftObjectPtr<USoundBase> hurtSound;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sounds")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sounds")
 	TSoftObjectPtr<USoundBase> dieSound;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sounds")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sounds")
 	TSoftObjectPtr<USoundBase> pickupSound1;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sounds")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sounds")
 	TSoftObjectPtr<USoundBase> pickupSound2;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sounds")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sounds")
 	TSoftObjectPtr<USoundBase> pickupSound3;
 
 	// TODO : EntityManager
