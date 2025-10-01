@@ -6,11 +6,74 @@
 #include "GameFramework/Pawn.h"
 #include "BaseEntity.generated.h"
 
+class UBoxComponent;
+class UFlipbookComponent;
+
+UENUM()
+enum class EEntityType : uint8
+{
+	Base,
+	Enemy,
+	Player
+};
+
+UENUM()
+enum class EEntityState : uint8
+{
+	Idle,
+	Walking,
+	Jumping,
+	Attacking,
+	Hurt,
+	Dying
+};
+
 UCLASS()
 class REVISIONP2_API ABaseEntity : public APawn
 {
 	GENERATED_BODY()
 
+protected:
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FString name = "BaseEntity";
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	EEntityType type = EEntityType::Base;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	int id = 0;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FVector2D position = FVector2D::ZeroVector;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FVector2D positionOld = FVector2D::ZeroVector;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FVector2D velocity = FVector2D::ZeroVector;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FVector2D maxVelocity = FVector2D(1000.0f, 1000.0f);
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FVector2D speed = FVector2D(400.0f, 800.0f);
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FVector2D acceleration = FVector2D(2000.0f, 0.0f);
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	FVector2D friction = FVector2D(800.0f, 0.0f);
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	EEntityState state = EEntityState::Idle;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<UBoxComponent> hitbox;
+
+	//Sounds
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sounds")
+	TSoftObjectPtr<USoundBase> attackSound;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sounds")
+	TSoftObjectPtr<USoundBase> hurtSound;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sounds")
+	TSoftObjectPtr<USoundBase> dieSound;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sounds")
+	TSoftObjectPtr<USoundBase> pickupSound1;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sounds")
+	TSoftObjectPtr<USoundBase> pickupSound2;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Sounds")
+	TSoftObjectPtr<USoundBase> pickupSound3;
+
+	// TODO : EntityManager
 public:
 	// Sets default values for this pawn's properties
 	ABaseEntity();
@@ -19,11 +82,35 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-public:	
+public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UFUNCTION(BlueprintPure)
+	FORCEINLINE FVector2D GetPosition() const { return position; };
+	//UFUNCTION(BlueprintPure)
+	//FORCEINLINE FVector2D GetSize() const;
+	UFUNCTION(BlueprintPure)
+	EEntityState GetState() const { return state; }
+	UFUNCTION(BlueprintPure)
+	FString GetName() const { return name; }
+	UFUNCTION(BlueprintPure)
+	FORCEINLINE int GetID() const { return id; }
+	UFUNCTION(BlueprintPure)
+	EEntityType GetType() const { return type; }
+
+	void SetPosition(float _x, float _y);
+	void SetPosition(const FVector2D& _pos);
+	void SetSize(float _x, float _y);
+	void SetState(const EEntityState& _state);
+
+	void Move(float _x, float _y);
+	void AddVelocity(float _x, float _y);
+	void Accelerate(float _x, float _y);
+	void SetAcceleration(float _x, float _y);
+	void ApplyFriction(float _x, float _y);
 
 };
