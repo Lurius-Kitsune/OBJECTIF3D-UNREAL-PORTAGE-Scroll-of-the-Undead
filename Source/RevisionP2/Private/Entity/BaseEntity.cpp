@@ -18,7 +18,6 @@ ABaseEntity::ABaseEntity()
 void ABaseEntity::BeginPlay()
 {
 	Super::BeginPlay();
-	SetPosition
 }
 
 // Called every frame
