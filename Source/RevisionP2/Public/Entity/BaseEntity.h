@@ -73,7 +73,7 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sounds")
 	TSoftObjectPtr<USoundBase> pickupSound3;
 
-	// TODO : EntityManager
+	// TODO : EntityManager & DrawDebug
 public:
 	// Sets default values for this pawn's properties
 	ABaseEntity();

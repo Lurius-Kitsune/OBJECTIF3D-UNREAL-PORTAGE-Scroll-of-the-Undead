@@ -39,16 +39,24 @@ void APaperCharacterActor::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 
 void APaperCharacterActor::Move()
 {
-
+	// TODO
 }
 
 void APaperCharacterActor::Jump()
 {
-	
+	if (GetState() == EEntityState::Dying || GetState() == EEntityState::Jumping || GetState() == EEntityState::Hurt) { return; }
+	SetState(EEntityState::Jumping);
+	AddVelocity(0, -jumpVelocity);
 }
 
 void APaperCharacterActor::Attack()
 {
+	if (GetState() == EEntityState::Dying || GetState() == EEntityState::Jumping ||
+		GetState() == EEntityState::Hurt || GetState() == EEntityState::Attacking)
+	{
+		return;
+	}
+	SetState(EEntityState::Attacking);
 }
 
 void APaperCharacterActor::GetHurt(const int& _damage)

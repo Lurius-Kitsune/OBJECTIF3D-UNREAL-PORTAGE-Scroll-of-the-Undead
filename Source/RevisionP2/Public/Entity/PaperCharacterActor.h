@@ -45,8 +45,8 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	void Move();
-
+	void Move(); // je peux degager le enum Direction ?
+	//void Move(const FInputActionValue& _value);
 	void Jump();
 	void Attack();
 	void GetHurt(const int& _damage);
