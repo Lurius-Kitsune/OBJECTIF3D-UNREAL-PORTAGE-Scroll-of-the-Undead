@@ -29,6 +29,22 @@ void APaperCharacterActor::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	if (GetState() != EEntityState::Dying && GetState() != EEntityState::Attacking && GetState() != EEntityState::Hurt) {
+		if (abs(velocity.Y) >= 0.001f) {
+			SetState(EEntityState::Jumping);
+		}
+		else if (abs(velocity.X) >= 0.1f) {
+			SetState(EEntityState::Walking);
+		}
+		else {
+			SetState(EEntityState::Idle);
+		}
+	}
+	else if (GetState() == EEntityState::Dying) {
+		/*if (!m_spriteSheet.GetCurrentAnim()->IsPlaying()) {
+			m_entityManager->Remove(m_id);
+		}*/
+	}
 }
 
 // Called to bind functionality to input
@@ -43,6 +59,7 @@ void APaperCharacterActor::Move(const FInputActionValue& _value)
 	if (GetState() == EEntityState::Dying) { return; }
 	const FVector2D& _movement = _value.Get<FVector2D>();
 	// Tourner le sprite selon la direction -> event? 
+	onMovement.Broadcast(_movement);
 	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Move : ") + FString::SanitizeFloat(_movement.X));
 	if (_movement.X < 0) { Accelerate(-speed.X, 0); }
 	else { Accelerate(speed.X, 0); }
@@ -51,9 +68,10 @@ void APaperCharacterActor::Move(const FInputActionValue& _value)
 
 void APaperCharacterActor::Jump()
 {
+	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Jump"));
 	if (GetState() == EEntityState::Dying || GetState() == EEntityState::Jumping || GetState() == EEntityState::Hurt) { return; }
 	SetState(EEntityState::Jumping);
-	AddVelocity(0, -jumpVelocity);
+	AddVelocity(0, jumpVelocity);
 }
 
 void APaperCharacterActor::Attack()

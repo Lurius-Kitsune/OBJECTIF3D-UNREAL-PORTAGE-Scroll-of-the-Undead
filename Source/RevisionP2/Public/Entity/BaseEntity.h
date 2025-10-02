@@ -17,6 +17,7 @@ enum class EEntityType : uint8
 	Player
 };
 
+
 UENUM()
 enum class EEntityState : uint8
 {
@@ -54,7 +55,7 @@ protected:
 	FVector2D acceleration = FVector2D(2000.0f, 0.0f);
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FVector2D friction = FVector2D(800.0f, 0.0f);
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
 	EEntityState state = EEntityState::Idle;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UBoxComponent> hitbox;
@@ -72,6 +73,10 @@ protected:
 	TSoftObjectPtr<USoundBase> pickupSound2;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sounds")
 	TSoftObjectPtr<USoundBase> pickupSound3;
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnStateChanged, const EEntityState&, state);
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnStateChanged onStateChanged;
 
 	// TODO : EntityManager & DrawDebug
 public:
@@ -105,6 +110,7 @@ public:
 	void SetPosition(float _x, float _y);
 	void SetPosition(const FVector2D& _pos);
 	void SetSize(float _x, float _y);
+	UFUNCTION(BlueprintCallable)
 	void SetState(const EEntityState& _state);
 
 	void Move(const FVector2D& _movement);

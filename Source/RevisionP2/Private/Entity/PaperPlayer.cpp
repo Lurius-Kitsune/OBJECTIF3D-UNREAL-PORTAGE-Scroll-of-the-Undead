@@ -64,6 +64,7 @@ void APaperPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	UEnhancedInputComponent* _inputCompo = Cast<UEnhancedInputComponent>(PlayerInputComponent);
 	if (!_inputCompo) return;
 	_inputCompo->BindAction(inputData.moveAction, ETriggerEvent::Triggered, this, &APaperPlayer::Move);
+	_inputCompo->BindAction(inputData.moveAction, ETriggerEvent::Completed, this, &APaperPlayer::Move);
 	_inputCompo->BindAction(inputData.jumpAction, ETriggerEvent::Started, this, &APaperCharacterActor::Jump);
 	_inputCompo->BindAction(inputData.attackAction, ETriggerEvent::Triggered, this, &APaperCharacterActor::Attack);
 }

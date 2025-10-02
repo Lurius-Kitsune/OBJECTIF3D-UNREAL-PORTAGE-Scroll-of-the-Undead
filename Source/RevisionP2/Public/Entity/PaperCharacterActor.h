@@ -20,6 +20,11 @@ class REVISIONP2_API APaperCharacterActor : public ABaseEntity
 	GENERATED_BODY()
 	
 protected:
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMovement, const FVector2D&, direction);
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnMovement onMovement;
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UPaperFlipbookComponent> sprite;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)

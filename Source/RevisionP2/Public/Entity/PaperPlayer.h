@@ -33,6 +33,7 @@ class REVISIONP2_API APaperPlayer : public APaperCharacterActor
 	GENERATED_BODY()
 
 protected:
+
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FPlayerInputData inputData;
 

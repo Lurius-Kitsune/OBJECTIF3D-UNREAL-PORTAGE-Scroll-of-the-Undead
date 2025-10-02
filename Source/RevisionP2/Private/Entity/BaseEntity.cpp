@@ -13,6 +13,7 @@ ABaseEntity::ABaseEntity()
 	hitbox = CreateDefaultSubobject<UBoxComponent>(TEXT("Hitbox"));
 	hitbox->SetupAttachment(RootComponent);
 
+
 }
 
 // Called when the game starts or when spawned
@@ -28,7 +29,7 @@ void ABaseEntity::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	float _dt = DeltaTime;
-	float _gravity = -9.0f;
+	float _gravity = -512.0f;
 	Accelerate(0, _gravity);
 	//UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Aceleration : x: ") + FString::SanitizeFloat(acceleration.X) + TEXT(" y: ") + FString::SanitizeFloat(acceleration.Y));
 	AddVelocity(acceleration.X * _dt, acceleration.Y * _dt);
@@ -75,7 +76,11 @@ void ABaseEntity::SetSize(float _x, float _y)
 
 void ABaseEntity::SetState(const EEntityState& _state)
 {
+
 	if (state == EEntityState::Dying) { return; }
+	if (_state != state) {
+		onStateChanged.Broadcast(_state);
+	}
 	state = _state;
 
 	if (_state == EEntityState::Attacking) {
@@ -94,7 +99,18 @@ void ABaseEntity::Move(const FVector2D& _movement)
 {
 	positionOld = position;
 	position += _movement;
-	SetActorLocation(FVector(position, 0.0f));
+	FHitResult* _result = new FHitResult();
+	SetActorLocation(FVector(position.X, positionOld.Y, 0.0f), true, _result);
+	if (_result->bBlockingHit) {
+		velocity.X = 0.0f;
+		position.X = positionOld.X;
+	}
+	SetActorLocation(FVector(position.X, position.Y, 0.0f), true, _result);
+	if (_result->bBlockingHit) {
+		velocity.Y = 0.0f;
+		position.Y = positionOld.Y;
+	}
+	delete _result;
 	if (position.X < 0) {
 		position.X = 0;
 	}
