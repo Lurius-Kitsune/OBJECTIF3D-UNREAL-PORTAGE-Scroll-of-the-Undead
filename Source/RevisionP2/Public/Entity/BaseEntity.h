@@ -4,30 +4,11 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Pawn.h"
+#include "Enum/Entity.h"
 #include "BaseEntity.generated.h"
 
 class UBoxComponent;
 class UFlipbookComponent;
-
-UENUM()
-enum class EEntityType : uint8
-{
-	Base,
-	Enemy,
-	Player
-};
-
-
-UENUM()
-enum class EEntityState : uint8
-{
-	Idle,
-	Walking,
-	Jumping,
-	Attacking,
-	Hurt,
-	Dying
-};
 
 UCLASS()
 class REVISIONP2_API ABaseEntity : public APawn
@@ -59,6 +40,10 @@ protected:
 	EEntityState state = EEntityState::Idle;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UBoxComponent> hitbox;
+
+	// DebugMode
+	UPROPERTY(EditAnywhere, Category = "Debug")
+	bool debugMode = false;
 
 	//Sounds
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sounds")

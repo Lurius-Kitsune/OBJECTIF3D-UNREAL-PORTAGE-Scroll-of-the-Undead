@@ -29,8 +29,8 @@ void ABaseEntity::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 
 	float _dt = DeltaTime;
-	float _gravity = -512.0f;
-	Accelerate(0, _gravity);
+	float _gravity = 512.0f;
+	Accelerate(0, -_gravity);
 	//UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Aceleration : x: ") + FString::SanitizeFloat(acceleration.X) + TEXT(" y: ") + FString::SanitizeFloat(acceleration.Y));
 	AddVelocity(acceleration.X * _dt, acceleration.Y * _dt);
 	//UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Velocity : x: ") + FString::SanitizeFloat(velocity.X) + TEXT(" y: ") + FString::SanitizeFloat(velocity.Y));

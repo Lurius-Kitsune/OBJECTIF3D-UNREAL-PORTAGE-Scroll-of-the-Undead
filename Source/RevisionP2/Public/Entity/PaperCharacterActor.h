@@ -27,6 +27,9 @@ protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UPaperFlipbookComponent> sprite;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	EEntityDirection direction = EEntityDirection::Right;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	float jumpVelocity = 600.0f;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
@@ -64,4 +67,7 @@ public:
 
 	UFUNCTION(BlueprintPure)
 	FORCEINLINE int GetHitpoints() const { return hitPoints; }
+
+	UFUNCTION(BlueprintCallable)
+	void ToogleAttackHitbox(const bool _enable);
 };

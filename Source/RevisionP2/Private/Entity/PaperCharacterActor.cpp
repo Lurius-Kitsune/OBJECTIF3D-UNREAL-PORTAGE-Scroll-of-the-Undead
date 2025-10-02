@@ -57,12 +57,26 @@ void APaperCharacterActor::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 void APaperCharacterActor::Move(const FInputActionValue& _value)
 {
 	if (GetState() == EEntityState::Dying) { return; }
+	EEntityDirection _dirOld = direction;
 	const FVector2D& _movement = _value.Get<FVector2D>();
-	// Tourner le sprite selon la direction -> event? 
 	onMovement.Broadcast(_movement);
 	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Move : ") + FString::SanitizeFloat(_movement.X));
-	if (_movement.X < 0) { Accelerate(-speed.X, 0); }
-	else { Accelerate(speed.X, 0); }
+	if (_movement.X < 0) 
+	{ 
+		Accelerate(-speed.X, 0); 
+		direction = EEntityDirection::Left;
+	}
+	else if (_movement.X > 0)
+	{
+		Accelerate(speed.X, 0); 
+		direction = EEntityDirection::Right;
+	}
+
+	if(_dirOld != direction)
+	{
+		UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Direction changed"));
+		attackHitbox->SetRelativeLocation(attackHitbox->GetRelativeLocation() * FVector(-1, 1, 1));
+	}
 	if (GetState() == EEntityState::Idle) { SetState(EEntityState::Walking); }
 }
 
@@ -94,6 +108,12 @@ void APaperCharacterActor::GetHurt(const int& _damage)
 	else {
 		SetState(EEntityState::Dying);
 	}
+}
+
+void APaperCharacterActor::ToogleAttackHitbox(const bool _enable)
+{
+	attackHitbox->SetCollisionEnabled(_enable ? ECollisionEnabled::QueryOnly : ECollisionEnabled::NoCollision);
+	if (debugMode && _enable) UKismetSystemLibrary::DrawDebugBox(GetWorld(), attackHitbox->GetComponentLocation(), attackHitbox->GetScaledBoxExtent(), FColor::Red, FRotator::ZeroRotator, 1.0f, 2.0f);
 }
 
 
