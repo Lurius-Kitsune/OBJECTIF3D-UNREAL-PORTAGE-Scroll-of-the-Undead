@@ -4,6 +4,7 @@
 #include "Entity/PaperCharacterActor.h"
 #include "Components/BoxComponent.h"
 #include "PaperFlipbookComponent.h"
+#include "InputActionValue.h"
 
 // Sets default values
 APaperCharacterActor::APaperCharacterActor()
@@ -37,9 +38,15 @@ void APaperCharacterActor::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 
 }
 
-void APaperCharacterActor::Move()
+void APaperCharacterActor::Move(const FInputActionValue& _value)
 {
-	// TODO
+	if (GetState() == EEntityState::Dying) { return; }
+	const FVector2D& _movement = _value.Get<FVector2D>();
+	// Tourner le sprite selon la direction -> event? 
+
+	if (_movement.X < 0) { Accelerate(-speed.X, 0); }
+	else { Accelerate(speed.X, 0); }
+	if (GetState() == EEntityState::Idle) { SetState(EEntityState::Walking); }
 }
 
 void APaperCharacterActor::Jump()

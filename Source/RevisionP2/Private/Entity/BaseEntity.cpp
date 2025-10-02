@@ -71,10 +71,10 @@ void ABaseEntity::SetState(const EEntityState& _state)
 	}
 }
 
-void ABaseEntity::Move(float _x, float _y)
+void ABaseEntity::Move(const FVector2D& _movement)
 {
 	positionOld = position;
-	position += FVector2D(_x, _y);
+	position += _movement;
 	SetActorLocation(FVector(position, 0.0f));
 	/*sf::Vector2u mapSize = m_entityManager->GetContext()->m_gameMap->GetMapSize();
 	if (m_position.x < 0) {

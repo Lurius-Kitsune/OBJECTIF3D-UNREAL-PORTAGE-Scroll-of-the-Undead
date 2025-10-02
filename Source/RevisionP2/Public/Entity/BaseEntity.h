@@ -107,7 +107,7 @@ public:
 	void SetSize(float _x, float _y);
 	void SetState(const EEntityState& _state);
 
-	void Move(float _x, float _y);
+	void Move(const FVector2D& _movement);
 	void AddVelocity(float _x, float _y);
 	void Accelerate(float _x, float _y);
 	void SetAcceleration(float _x, float _y);
