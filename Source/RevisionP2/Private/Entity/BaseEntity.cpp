@@ -3,6 +3,7 @@
 
 #include "Entity/BaseEntity.h"
 #include "Components/BoxComponent.h"
+#include "Kismet/KismetSystemLibrary.h"
 
 // Sets default values
 ABaseEntity::ABaseEntity()
@@ -18,6 +19,7 @@ ABaseEntity::ABaseEntity()
 void ABaseEntity::BeginPlay()
 {
 	Super::BeginPlay();
+	position = FVector2D(GetActorLocation());
 }
 
 // Called every frame
@@ -25,6 +27,23 @@ void ABaseEntity::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	float _dt = DeltaTime;
+	float _gravity = -9.0f;
+	Accelerate(0, _gravity);
+	//UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Aceleration : x: ") + FString::SanitizeFloat(acceleration.X) + TEXT(" y: ") + FString::SanitizeFloat(acceleration.Y));
+	AddVelocity(acceleration.X * _dt, acceleration.Y * _dt);
+	//UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Velocity : x: ") + FString::SanitizeFloat(velocity.X) + TEXT(" y: ") + FString::SanitizeFloat(velocity.Y));
+	SetAcceleration(0.0f, 0.0f);
+	FVector2D _frictionValue = FVector2D::ZeroVector;
+	_frictionValue = friction;
+
+	const float& _frictionX = (_frictionValue.X * speed.X) * _dt;
+	const float& _frictionY = (_frictionValue.Y * speed.Y) * _dt;
+	//UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Friction : x: ") + FString::SanitizeFloat(_frictionX) + TEXT(" y: ") + FString::SanitizeFloat(_frictionY));
+	ApplyFriction(_frictionX, _frictionY);
+	FVector2D _deltaPos = velocity * _dt;
+	//UKismetSystemLibrary::PrintString(GetWorld(), TEXT("DeltaPos : x: ") + FString::SanitizeFloat(_deltaPos.X) + TEXT(" y: ") + FString::SanitizeFloat(_deltaPos.Y));
+	Move(_deltaPos);
 }
 
 // Called to bind functionality to input
@@ -76,17 +95,19 @@ void ABaseEntity::Move(const FVector2D& _movement)
 	positionOld = position;
 	position += _movement;
 	SetActorLocation(FVector(position, 0.0f));
-	/*sf::Vector2u mapSize = m_entityManager->GetContext()->m_gameMap->GetMapSize();
-	if (m_position.x < 0) {
-		m_position.x = 0;
+	if (position.X < 0) {
+		position.X = 0;
 	}
+	if (position.Y < 0) {
+		position.Y = 0;
+	}
+	/*sf::Vector2u mapSize = m_entityManager->GetContext()->m_gameMap->GetMapSize();
+	
 	else if (m_position.x > (mapSize.x) * Sheet::Tile_Size) {
 		m_position.x = (mapSize.x) * Sheet::Tile_Size;
 	}
 
-	if (m_position.y < 0) {
-		m_position.y = 0;
-	}
+	
 	else if (m_position.y > (mapSize.y + 1) * Sheet::Tile_Size) {
 		m_position.y = (mapSize.y + 1) * Sheet::Tile_Size;
 		SetState(EntityState::Dying);

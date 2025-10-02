@@ -8,6 +8,8 @@
 
 class UInputMappingContext;
 class UInputAction;
+class USpringArmComponent;
+class UCameraComponent;
 
 USTRUCT(BlueprintType)
 struct FPlayerInputData
@@ -33,6 +35,12 @@ class REVISIONP2_API APaperPlayer : public APaperCharacterActor
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	FPlayerInputData inputData;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<USpringArmComponent> springarm = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	TObjectPtr<UCameraComponent> camera = nullptr;
 
 public:
 	// Sets default values for this pawn's properties

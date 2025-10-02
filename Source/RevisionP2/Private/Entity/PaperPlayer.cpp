@@ -4,12 +4,29 @@
 #include "Entity/PaperPlayer.h"
 #include <EnhancedInputSubsystems.h>
 #include <EnhancedInputComponent.h>
+#include <GameFramework/SpringArmComponent.h>
+#include <Camera/CameraComponent.h>
+#include "Components/BoxComponent.h"
 
 // Sets default values
 APaperPlayer::APaperPlayer()
 {
  	// Set this pawn to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
+
+	springarm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
+	camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+	springarm->SetupAttachment(hitbox);
+	camera->SetupAttachment(springarm);
+
+
+	hitPoints = 5;
+	currentHitPoints = hitPoints;
+	name = "Player";
+	type = EEntityType::Player;
+	speed = FVector2D(1024.0f, 128.0f);
+	jumpVelocity = 300.0f;
+	maxVelocity = FVector2D(200.0f, 1024.0f);
 }
 
 // Called when the game starts or when spawned

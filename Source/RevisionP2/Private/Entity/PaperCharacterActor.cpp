@@ -5,7 +5,7 @@
 #include "Components/BoxComponent.h"
 #include "PaperFlipbookComponent.h"
 #include "InputActionValue.h"
-
+#include "Kismet/KismetSystemLibrary.h"
 // Sets default values
 APaperCharacterActor::APaperCharacterActor()
 {
@@ -43,7 +43,7 @@ void APaperCharacterActor::Move(const FInputActionValue& _value)
 	if (GetState() == EEntityState::Dying) { return; }
 	const FVector2D& _movement = _value.Get<FVector2D>();
 	// Tourner le sprite selon la direction -> event? 
-
+	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Move : ") + FString::SanitizeFloat(_movement.X));
 	if (_movement.X < 0) { Accelerate(-speed.X, 0); }
 	else { Accelerate(speed.X, 0); }
 	if (GetState() == EEntityState::Idle) { SetState(EEntityState::Walking); }
