@@ -99,18 +99,17 @@ void ABaseEntity::Move(const FVector2D& _movement)
 {
 	positionOld = position;
 	position += _movement;
-	FHitResult* _result = new FHitResult();
-	SetActorLocation(FVector(position.X, positionOld.Y, 0.0f), true, _result);
-	if (_result->bBlockingHit) {
+	FHitResult _result = FHitResult();
+	SetActorLocation(FVector(position.X, positionOld.Y, -1.0f), true, &_result);
+	if (_result.bBlockingHit) {
 		velocity.X = 0.0f;
 		position.X = positionOld.X;
 	}
-	SetActorLocation(FVector(position.X, position.Y, 0.0f), true, _result);
-	if (_result->bBlockingHit) {
+	SetActorLocation(FVector(position.X, position.Y, -1.0f), true, &_result);
+	if (_result.bBlockingHit) {
 		velocity.Y = 0.0f;
 		position.Y = positionOld.Y;
 	}
-	delete _result;
 	if (position.X < 0) {
 		position.X = 0;
 	}
