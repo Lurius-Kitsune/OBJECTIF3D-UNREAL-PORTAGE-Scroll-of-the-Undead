@@ -21,6 +21,7 @@ void ABaseEntity::BeginPlay()
 {
 	Super::BeginPlay();
 	position = FVector2D(GetActorLocation());
+
 }
 
 // Called every frame
