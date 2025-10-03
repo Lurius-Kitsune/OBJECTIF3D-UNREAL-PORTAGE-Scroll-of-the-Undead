@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Entity/BaseEntity.h"
+#include "Enum/Entity.h"
 #include "PaperCharacterActor.generated.h"
 
 /**
@@ -24,6 +25,10 @@ protected:
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMovement, const FVector2D&, direction);
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FOnMovement onMovement;
+
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDirectionChanged, const EEntityDirection&, direction);
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnDirectionChanged onDirectionChanged;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UPaperFlipbookComponent> sprite;
@@ -55,6 +60,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UFUNCTION(BlueprintCallable)
+	void Move(const EEntityDirection& _value);
 	void Move(const FInputActionValue& _value);
 	UFUNCTION(BlueprintCallable)
 	void Jump();
@@ -64,7 +70,10 @@ public:
 	void GetHurt(const int& _damage);
 
 	//virtual void OnEntityCollision(EEntityBase l_collider, bool l_attack) = 0;
-
+	UFUNCTION(BlueprintPure)
+	FORCEINLINE EEntityDirection GetDirection() const { return direction; }
+	UFUNCTION(BlueprintCallable)
+	void SetDirection(const EEntityDirection& _dir);
 	UFUNCTION(BlueprintPure)
 	FORCEINLINE int GetHitpoints() const { return hitPoints; }
 

@@ -167,3 +167,7 @@ void ABaseEntity::ApplyFriction(float _x, float _y)
 		else { velocity.Y -= _y; }
 	}
 }
+
+void ABaseEntity::OnEntityCollision(UPrimitiveComponent* _me, AActor* _other, UPrimitiveComponent* _otherComp, int32 _otherBodyIndex, bool _fromSweep, const FHitResult& _sweepResult)
+{
+}

@@ -48,6 +48,8 @@ void APaperPlayer::Init()
 	}
 	// On donne le contexte de mapping
 	_sys->AddMappingContext(inputData.inputMapping, 0);
+
+	hitbox->OnComponentBeginOverlap.AddDynamic(this, &APaperPlayer::OnEntityCollision);
 }
 
 // Called every frame
@@ -67,5 +69,30 @@ void APaperPlayer::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	_inputCompo->BindAction(inputData.moveAction, ETriggerEvent::Completed, this, &APaperPlayer::Move);
 	_inputCompo->BindAction(inputData.jumpAction, ETriggerEvent::Started, this, &APaperCharacterActor::Jump);
 	_inputCompo->BindAction(inputData.attackAction, ETriggerEvent::Triggered, this, &APaperCharacterActor::Attack);
+}
+
+void APaperPlayer::OnEntityCollision(UPrimitiveComponent* _me, AActor* _other, UPrimitiveComponent* _otherComp, int32 _otherBodyIndex, bool _fromSweep, const FHitResult& _sweepResult)
+{
+	if (state == EEntityState::Dying) { return; }
+	//if (l_attack) {
+		if (state != EEntityState::Attacking) { return; }
+		TObjectPtr<APaperCharacterActor> _char = Cast<APaperCharacterActor>(_other);
+		if (!_char) { return; };
+		if (_char->GetType() != EEntityType::Enemy &&
+			_char->GetType() != EEntityType::Player)
+		{
+			return;
+		}
+		_char->GetHurt(1);
+		if (position.X> _char->GetPosition().X) {
+			_char->AddVelocity(-32, 0);
+		}
+		else {
+			_char->AddVelocity(32, 0);
+		}
+	//}
+	//else {
+	//	// Other behavior.
+	//}
 }
 

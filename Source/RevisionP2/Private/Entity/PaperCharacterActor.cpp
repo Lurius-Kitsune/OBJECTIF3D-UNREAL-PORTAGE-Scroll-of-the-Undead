@@ -6,6 +6,7 @@
 #include "PaperFlipbookComponent.h"
 #include "InputActionValue.h"
 #include "Kismet/KismetSystemLibrary.h"
+
 // Sets default values
 APaperCharacterActor::APaperCharacterActor()
 {
@@ -57,32 +58,32 @@ void APaperCharacterActor::SetupPlayerInputComponent(UInputComponent* PlayerInpu
 void APaperCharacterActor::Move(const FInputActionValue& _value)
 {
 	if (GetState() == EEntityState::Dying) { return; }
-	EEntityDirection _dirOld = direction;
 	const FVector2D& _movement = _value.Get<FVector2D>();
 	onMovement.Broadcast(_movement);
-	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Move : ") + FString::SanitizeFloat(_movement.X));
+	if (debugMode) UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Move : ") + FString::SanitizeFloat(_movement.X));
 	if (_movement.X < 0) 
 	{ 
-		Accelerate(-speed.X, 0); 
+		Move(EEntityDirection::Left);
 		direction = EEntityDirection::Left;
 	}
 	else if (_movement.X > 0)
 	{
-		Accelerate(speed.X, 0); 
-		direction = EEntityDirection::Right;
+		Move(EEntityDirection::Right);
 	}
+}
 
-	if(_dirOld != direction)
-	{
-		UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Direction changed"));
-		attackHitbox->SetRelativeLocation(attackHitbox->GetRelativeLocation() * FVector(-1, 1, 1));
-	}
+void APaperCharacterActor::Move(const EEntityDirection& _value)
+{
+	if (GetState() == EEntityState::Dying) { return; }
+	EEntityDirection _dirOld = direction;
+	Accelerate(_value == EEntityDirection::Left  ? -speed.X : speed.X, 0);
+	SetDirection(_value);
 	if (GetState() == EEntityState::Idle) { SetState(EEntityState::Walking); }
 }
 
 void APaperCharacterActor::Jump()
 {
-	UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Jump"));
+	if (debugMode) UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Jump"));
 	if (GetState() == EEntityState::Dying || GetState() == EEntityState::Jumping || GetState() == EEntityState::Hurt) { return; }
 	SetState(EEntityState::Jumping);
 	AddVelocity(0, jumpVelocity);
@@ -107,6 +108,17 @@ void APaperCharacterActor::GetHurt(const int& _damage)
 	if (currentHitPoints) { SetState(EEntityState::Hurt); }
 	else {
 		SetState(EEntityState::Dying);
+	}
+}
+
+void APaperCharacterActor::SetDirection(const EEntityDirection& _dir)
+{
+	if (_dir != direction)
+	{
+		if (debugMode) UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Direction changed"));
+		attackHitbox->SetRelativeLocation(attackHitbox->GetRelativeLocation() * FVector(-1, 1, 1));
+		onDirectionChanged.Broadcast(_dir);
+		direction = _dir;
 	}
 }
 

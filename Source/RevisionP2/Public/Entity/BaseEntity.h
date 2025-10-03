@@ -104,4 +104,7 @@ public:
 	void SetAcceleration(float _x, float _y);
 	void ApplyFriction(float _x, float _y);
 
+	UFUNCTION(BlueprintCallable)
+	virtual void OnEntityCollision(UPrimitiveComponent* _me, AActor* _other, UPrimitiveComponent* _otherComp, int32 _otherBodyIndex, bool _fromSweep, const FHitResult& _sweepResult);
+
 };
