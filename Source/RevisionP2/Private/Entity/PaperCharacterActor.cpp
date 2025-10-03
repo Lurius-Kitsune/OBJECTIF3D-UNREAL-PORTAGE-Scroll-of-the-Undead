@@ -111,6 +111,7 @@ void APaperCharacterActor::GetHurt(const int& _damage)
 	currentHitPoints = (currentHitPoints - _damage > 0 ? currentHitPoints - _damage : 0);
 	//if (type == EEntityType::Player)
 		//entityManager->GetContext()->m_characterCurrentHealth = currentHitPoints;
+	onDamageReceived.Broadcast(_damage);
 	if (currentHitPoints > 0) 
 	{ 
 		SetState(EEntityState::Hurt); 

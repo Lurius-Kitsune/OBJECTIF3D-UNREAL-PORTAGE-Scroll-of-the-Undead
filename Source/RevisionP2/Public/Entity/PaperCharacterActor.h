@@ -31,6 +31,10 @@ protected:
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FOnDirectionChanged onDirectionChanged;
 
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDamageReceived, const int&, damageValue);
+	UPROPERTY(BlueprintAssignable, Category = "Events")
+	FOnDamageReceived onDamageReceived;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UPaperFlipbookComponent> sprite;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
