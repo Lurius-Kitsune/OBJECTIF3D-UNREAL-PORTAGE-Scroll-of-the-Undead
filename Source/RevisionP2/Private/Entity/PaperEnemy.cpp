@@ -13,7 +13,7 @@ APaperEnemy::APaperEnemy()
 void APaperEnemy::BeginPlay()
 {
 	Super::BeginPlay();
-	attackHitbox->OnComponentBeginOverlap.AddDynamic(this, &APaperEnemy::OnEntityCollision);
+	hitbox->OnComponentBeginOverlap.AddDynamic(this, &APaperEnemy::OnEntityCollision);
 }
 
 void APaperEnemy::Tick(float DeltaTime)
@@ -30,11 +30,11 @@ void APaperEnemy::Tick(float DeltaTime)
 		if (_collidingOnX) { hasDestination = false; }
 		return;
 	}
-	int random = rand() % 100 + 1;
-	if (random != 100) { return; }
-	int newX = rand() % 65 + 0;
-	if (rand() % 2) { newX = -newX; }
-	destination.X = position.X + newX;
+	int _random = rand() % 100 + 1;
+	if (_random != 100) { return; }
+	int _newX = rand() % 65 + 0;
+	if (rand() % 2) { _newX = -_newX; }
+	destination.X = position.X + _newX;
 	if (destination.X < 0) { destination.X = 0; }
 	hasDestination = true;
 }
@@ -50,6 +50,8 @@ void APaperEnemy::OnEntityCollision(UPrimitiveComponent* _me, AActor* _other, UP
 	//if (attack) { return; }
 	TObjectPtr<APaperPlayer> _player = Cast<APaperPlayer>(_other);
 	if (!_player) { return; }
+	// check if hitbox is not the attackhitbox
+	if (_otherComp->GetCollisionObjectType() == ECollisionChannel::ECC_GameTraceChannel1) return;
 	SetState(EEntityState::Attacking);
 	_player->GetHurt(1);
 	if (position.X > _player->GetPosition().X) {
