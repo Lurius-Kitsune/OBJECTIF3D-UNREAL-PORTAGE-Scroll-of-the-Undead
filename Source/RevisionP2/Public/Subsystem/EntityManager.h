@@ -22,7 +22,6 @@ protected:
 	TArray<TObjectPtr<ABaseEntity>> entities;
 
 public:
-	UFUNCTION(BlueprintCallable)
 	void Add(const TObjectPtr<ABaseEntity>& _entity);
 
 
