@@ -24,7 +24,10 @@ void APaperEnemy::Tick(float DeltaTime)
 		if (abs(destination.X - position.X) < 16) { hasDestination = false; return; }
 		if (destination.X - position.X > 0) { Move(EEntityDirection::Right); }
 		else { Move(EEntityDirection::Left); }
-		//if (m_collidingOnX) { m_hasDestination = false; }
+		//Check collision with block / hitbox
+		
+		bool _collidingOnX = (position.X == positionOld.X);
+		if (_collidingOnX) { hasDestination = false; }
 		return;
 	}
 	int random = rand() % 100 + 1;

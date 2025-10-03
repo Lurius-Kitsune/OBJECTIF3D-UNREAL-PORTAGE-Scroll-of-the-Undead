@@ -4,6 +4,7 @@
 #include "Entity/PaperCharacterActor.h"
 #include "Components/BoxComponent.h"
 #include "PaperFlipbookComponent.h"
+#include "PaperZDAnimationComponent.h"
 #include "InputActionValue.h"
 #include "Kismet/KismetSystemLibrary.h"
 
@@ -14,6 +15,8 @@ APaperCharacterActor::APaperCharacterActor()
 	PrimaryActorTick.bCanEverTick = true;
 	sprite = CreateDefaultSubobject<UPaperFlipbookComponent>(TEXT("Sprite"));
 	attackHitbox = CreateDefaultSubobject<UBoxComponent>(TEXT("AttackHitbox"));
+	animation = CreateDefaultSubobject<UPaperZDAnimationComponent>(TEXT("Animation"));
+	animation->InitRenderComponent(sprite);
 	attackHitbox->SetupAttachment(hitbox);
 	sprite->SetupAttachment(hitbox);
 }
@@ -22,7 +25,10 @@ APaperCharacterActor::APaperCharacterActor()
 void APaperCharacterActor::BeginPlay()
 {
 	Super::BeginPlay();
-
+	attackHitbox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
+	bool _isHiddennGame = !debugMode;
+	attackHitbox->SetHiddenInGame(_isHiddennGame);
+	hitbox->SetHiddenInGame(_isHiddennGame);
 }
 
 // Called every frame

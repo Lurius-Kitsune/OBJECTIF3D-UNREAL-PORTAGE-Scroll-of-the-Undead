@@ -14,6 +14,7 @@
 class UPaperFlipbookComponent;
 class UBoxComponent;
 struct FInputActionValue;
+class UPaperZDAnimationComponent;
 
 UCLASS()
 class REVISIONP2_API APaperCharacterActor : public ABaseEntity
@@ -30,8 +31,10 @@ protected:
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FOnDirectionChanged onDirectionChanged;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UPaperFlipbookComponent> sprite;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<UPaperZDAnimationComponent> animation;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	EEntityDirection direction = EEntityDirection::Right;

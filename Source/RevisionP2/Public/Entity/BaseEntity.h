@@ -40,6 +40,8 @@ protected:
 	EEntityState state = EEntityState::Idle;
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UBoxComponent> hitbox;
+	UPROPERTY(EditAnywhere)
+	float zOffset = -2.0f;
 
 	// DebugMode
 	UPROPERTY(EditAnywhere, Category = "Debug")
