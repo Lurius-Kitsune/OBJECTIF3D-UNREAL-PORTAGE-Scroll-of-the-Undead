@@ -74,7 +74,7 @@ void ABaseEntity::SetSize(float _x, float _y)
 	hitbox->SetBoxExtent(FVector(_x * 0.5f, _y * 0.5f, 50.0f));
 }
 
-void ABaseEntity::SetState(const EEntityState& _state)
+void ABaseEntity::SetState(const EEntityState _state)
 {
 
 	if (state == EEntityState::Dying) { return; }

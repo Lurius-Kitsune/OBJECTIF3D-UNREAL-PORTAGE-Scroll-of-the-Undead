@@ -49,7 +49,7 @@ void APaperPlayer::Init()
 	// On donne le contexte de mapping
 	_sys->AddMappingContext(inputData.inputMapping, 0);
 
-	hitbox->OnComponentBeginOverlap.AddDynamic(this, &APaperPlayer::OnEntityCollision);
+	attackHitbox->OnComponentBeginOverlap.AddDynamic(this, &APaperPlayer::OnEntityCollision);
 }
 
 // Called every frame

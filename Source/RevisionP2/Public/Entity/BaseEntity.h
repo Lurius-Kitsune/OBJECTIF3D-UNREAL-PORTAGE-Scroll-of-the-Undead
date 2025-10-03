@@ -96,7 +96,7 @@ public:
 	void SetPosition(const FVector2D& _pos);
 	void SetSize(float _x, float _y);
 	UFUNCTION(BlueprintCallable)
-	void SetState(const EEntityState& _state);
+	void SetState(const EEntityState _state);
 
 	void Move(const FVector2D& _movement);
 	void AddVelocity(float _x, float _y);

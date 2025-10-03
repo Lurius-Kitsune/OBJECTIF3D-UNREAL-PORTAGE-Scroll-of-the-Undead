@@ -64,7 +64,6 @@ void APaperCharacterActor::Move(const FInputActionValue& _value)
 	if (_movement.X < 0) 
 	{ 
 		Move(EEntityDirection::Left);
-		direction = EEntityDirection::Left;
 	}
 	else if (_movement.X > 0)
 	{
@@ -101,11 +100,16 @@ void APaperCharacterActor::Attack()
 
 void APaperCharacterActor::GetHurt(const int& _damage)
 {
+	if (debugMode) UKismetSystemLibrary::PrintString(GetWorld(), TEXT("GetHurt : ") + FString::FromInt(_damage));
 	if (GetState() == EEntityState::Dying || GetState() == EEntityState::Hurt) { return; }
 	currentHitPoints = (currentHitPoints - _damage > 0 ? currentHitPoints - _damage : 0);
-	if (type == EEntityType::Player)
+	//if (type == EEntityType::Player)
 		//entityManager->GetContext()->m_characterCurrentHealth = currentHitPoints;
-	if (currentHitPoints) { SetState(EEntityState::Hurt); }
+	if (currentHitPoints > 0) 
+	{ 
+		SetState(EEntityState::Hurt); 
+		if (debugMode) UKismetSystemLibrary::PrintString(GetWorld(), TEXT("HURT entity :") + name + TEXT(" HP : ") + FString::FromInt(currentHitPoints) + TEXT("/") + FString::FromInt(hitPoints), true, true, FLinearColor::Red);
+	}
 	else {
 		SetState(EEntityState::Dying);
 	}

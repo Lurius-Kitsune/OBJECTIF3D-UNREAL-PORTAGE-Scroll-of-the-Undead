@@ -13,7 +13,7 @@ APaperEnemy::APaperEnemy()
 void APaperEnemy::BeginPlay()
 {
 	Super::BeginPlay();
-	hitbox->OnComponentBeginOverlap.AddDynamic(this, &APaperEnemy::OnEntityCollision);
+	attackHitbox->OnComponentBeginOverlap.AddDynamic(this, &APaperEnemy::OnEntityCollision);
 }
 
 void APaperEnemy::Tick(float DeltaTime)
