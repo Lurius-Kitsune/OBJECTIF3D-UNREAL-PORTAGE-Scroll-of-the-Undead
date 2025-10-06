@@ -38,4 +38,6 @@ public:
 
 	virtual void OnEntityCollision(UPrimitiveComponent* _me, AActor* _other, UPrimitiveComponent* _otherComp, int32 _otherBodyIndex, bool _fromSweep, const FHitResult& _sweepResult);
 
+	UFUNCTION(BlueprintCallable)
+	virtual void OnDeath();
 };

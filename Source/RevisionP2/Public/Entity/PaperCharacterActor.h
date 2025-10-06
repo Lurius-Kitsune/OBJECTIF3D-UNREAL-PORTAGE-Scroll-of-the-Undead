@@ -24,11 +24,15 @@ class REVISIONP2_API APaperCharacterActor : public ABaseEntity
 protected:
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMovement, const FVector2D&, direction);
-	UPROPERTY(BlueprintAssignable, Category = "Events")
+	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "Events")
 	FOnMovement onMovement;
 
+	DECLARE_DYNAMIC_MULTICAST_DELEGATE(FOnDeath);
+	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "Events")
+	FOnDeath onDeath;
+
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDirectionChanged, const EEntityDirection&, direction);
-	UPROPERTY(BlueprintAssignable, Category = "Events")
+	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "Events")
 	FOnDirectionChanged onDirectionChanged;
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDamageReceived, const int&, damageValue);
@@ -75,6 +79,7 @@ public:
 	void Attack();
 	UFUNCTION(BlueprintCallable)
 	void GetHurt(const int& _damage);
+
 
 	//virtual void OnEntityCollision(EEntityBase l_collider, bool l_attack) = 0;
 	UFUNCTION(BlueprintPure)

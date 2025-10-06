@@ -4,6 +4,7 @@
 #include "Entity/PaperEnemy.h"
 #include "Components/BoxComponent.h"
 #include "Entity/PaperPlayer.h"
+#include "Subsystem/EntityManager.h"
 
 APaperEnemy::APaperEnemy()
 {
@@ -14,6 +15,7 @@ void APaperEnemy::BeginPlay()
 {
 	Super::BeginPlay();
 	hitbox->OnComponentBeginOverlap.AddDynamic(this, &APaperEnemy::OnEntityCollision);
+	onDeath.AddDynamic(this, &APaperEnemy::OnDeath);
 }
 
 void APaperEnemy::Tick(float DeltaTime)
@@ -62,5 +64,10 @@ void APaperEnemy::OnEntityCollision(UPrimitiveComponent* _me, AActor* _other, UP
 		_player->AddVelocity(speed.Y, 0);
 		SetDirection(EEntityDirection::Right);
 	}
+}
+
+void APaperEnemy::OnDeath()
+{
+	entityManager->RemoveAndDestroy(this);
 }
 

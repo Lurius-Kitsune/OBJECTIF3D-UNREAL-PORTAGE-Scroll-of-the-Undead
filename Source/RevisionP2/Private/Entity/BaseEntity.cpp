@@ -4,6 +4,7 @@
 #include "Entity/BaseEntity.h"
 #include "Components/BoxComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
+#include "Subsystem/EntityManager.h"
 
 // Sets default values
 ABaseEntity::ABaseEntity()
@@ -21,7 +22,10 @@ void ABaseEntity::BeginPlay()
 {
 	Super::BeginPlay();
 	position = FVector2D(GetActorLocation());
-
+	entityManager = GetWorld()->GetSubsystem<UEntityManager>();
+	if (entityManager) {
+		entityManager->Add(this);
+	}
 }
 
 // Called every frame

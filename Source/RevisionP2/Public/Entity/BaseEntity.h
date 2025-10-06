@@ -9,6 +9,7 @@
 
 class UBoxComponent;
 class UFlipbookComponent;
+class UEntityManager;
 
 UCLASS()
 class REVISIONP2_API ABaseEntity : public APawn
@@ -62,10 +63,15 @@ protected:
 	TSoftObjectPtr<USoundBase> pickupSound3;
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnStateChanged, const EEntityState&, state);
-	UPROPERTY(BlueprintAssignable, Category = "Events")
+	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "Events")
 	FOnStateChanged onStateChanged;
 
-	// TODO : EntityManager & DrawDebug
+
+	// Subsystem
+	UPROPERTY()
+	TObjectPtr<UEntityManager> entityManager;
+
+	// TODO : DrawDebug
 public:
 	// Sets default values for this pawn's properties
 	ABaseEntity();

@@ -23,8 +23,9 @@ protected:
 
 public:
 	void Add(const TObjectPtr<ABaseEntity>& _entity);
+	bool Remove(const TObjectPtr<ABaseEntity>& _entity);
+	bool RemoveAndDestroy(const TObjectPtr<ABaseEntity>& _entity);
 
-
+	bool Purge();
 	bool IsPresent(const TObjectPtr<ABaseEntity>& _entity);
-	
 };
