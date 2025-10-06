@@ -4,9 +4,15 @@
 #include "Entity/PaperPlayer.h"
 #include <EnhancedInputSubsystems.h>
 #include <EnhancedInputComponent.h>
+#include "PaperTileMapActor.h"
+#include "PaperTileLayer.h"
+#include "PaperTileMap.h"
 #include <GameFramework/SpringArmComponent.h>
 #include <Camera/CameraComponent.h>
+#include "Component/CollectComponent.h"
+#include "PaperTileMapComponent.h"
 #include "Components/BoxComponent.h"
+#include <Kismet/KismetSystemLibrary.h>
 
 // Sets default values
 APaperPlayer::APaperPlayer()
@@ -18,6 +24,8 @@ APaperPlayer::APaperPlayer()
 	camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
 	springarm->SetupAttachment(hitbox);
 	camera->SetupAttachment(springarm);
+
+	collectComponent = CreateDefaultSubobject<UCollectComponent>(TEXT("CollectComponent"));
 
 
 	hitPoints = 5;
@@ -50,6 +58,7 @@ void APaperPlayer::Init()
 	_sys->AddMappingContext(inputData.inputMapping, 0);
 
 	attackHitbox->OnComponentBeginOverlap.AddDynamic(this, &APaperPlayer::OnEntityCollision);
+	hitbox->OnComponentBeginOverlap.AddDynamic(this, &APaperPlayer::OnHitboxCollision);
 }
 
 // Called every frame
@@ -98,5 +107,17 @@ void APaperPlayer::OnEntityCollision(UPrimitiveComponent* _me, AActor* _other, U
 	//else {
 	//	// Other behavior.
 	//}
+}
+
+void APaperPlayer::OnHitboxCollision(UPrimitiveComponent* _me, AActor* _other, UPrimitiveComponent* _otherComp, int32 _otherBodyIndex, bool _fromSweep, const FHitResult& _sweepResult)
+{
+	TObjectPtr<UPaperTileMapComponent> _timeMapComponent = Cast<UPaperTileMapComponent>(_otherComp);
+	if (!_timeMapComponent) return;
+	TObjectPtr<UPaperTileMap> _tileMap = _timeMapComponent->TileMap;
+	int _x, _y = 0;
+	FVector _relativePlayerTransform = _timeMapComponent->GetComponentTransform().InverseTransformPosition(_me->GetComponentLocation());
+	_tileMap->GetTileCoordinatesFromLocalSpacePosition(_relativePlayerTransform, _x, _y);
+	UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("Player Pos in Tile X: %i Y: %i"), _x, _y));
+	collectComponent->Collect(_timeMapComponent, FVector2D(_x, _y));
 }
 
