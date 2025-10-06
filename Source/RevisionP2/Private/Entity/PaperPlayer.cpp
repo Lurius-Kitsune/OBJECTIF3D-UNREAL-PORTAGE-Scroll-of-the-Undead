@@ -84,6 +84,10 @@ void APaperPlayer::OnEntityCollision(UPrimitiveComponent* _me, AActor* _other, U
 			return;
 		}
 		_char->GetHurt(1);
+		if (_char->GetState() == EEntityState::Dying)
+		{
+			_char->SetDirection(direction == EEntityDirection::Left ? EEntityDirection::Right : EEntityDirection::Left);
+		}
 		if (position.X> _char->GetPosition().X) {
 			_char->AddVelocity(-32, 0);
 		}
