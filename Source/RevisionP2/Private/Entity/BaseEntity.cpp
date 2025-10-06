@@ -3,6 +3,7 @@
 
 #include "Entity/BaseEntity.h"
 #include "Components/BoxComponent.h"
+#include "Components/AudioComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Subsystem/EntityManager.h"
 
@@ -13,6 +14,8 @@ ABaseEntity::ABaseEntity()
 	PrimaryActorTick.bCanEverTick = true;
 	hitbox = CreateDefaultSubobject<UBoxComponent>(TEXT("Hitbox"));
 	hitbox->SetupAttachment(RootComponent);
+
+	audioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
 
 
 }
@@ -89,14 +92,19 @@ void ABaseEntity::SetState(const EEntityState _state)
 	state = _state;
 
 	if (_state == EEntityState::Attacking) {
-		//if (soundAttack.getStatus() != sf::SoundSource::Status::Playing)
-		//	m_soundAttack.play();
+		if (audioComponent->Sound == attackSound || !audioComponent->IsPlaying())
+		{
+			audioComponent->SetSound(attackSound);
+			audioComponent->Play();
+		}
 	}
 	else if (_state == EEntityState::Dying) {
-		//m_soundDie.play();
+		audioComponent->SetSound(dieSound);
+		audioComponent->Play();
 	}
 	else if (_state == EEntityState::Hurt) {
-		//m_soundHurt.play();
+		audioComponent->SetSound(hurtSound);
+		audioComponent->Play();
 	}
 }
 

@@ -47,11 +47,6 @@ void APaperCharacterActor::Tick(float DeltaTime)
 			SetState(EEntityState::Idle);
 		}
 	}
-	else if (GetState() == EEntityState::Dying) {
-		/*if (!m_spriteSheet.GetCurrentAnim()->IsPlaying()) {
-			m_entityManager->Remove(m_id);
-		}*/
-	}
 }
 
 // Called to bind functionality to input
@@ -109,8 +104,6 @@ void APaperCharacterActor::GetHurt(const int& _damage)
 	if (debugMode) UKismetSystemLibrary::PrintString(GetWorld(), TEXT("GetHurt : ") + FString::FromInt(_damage));
 	if (GetState() == EEntityState::Dying || GetState() == EEntityState::Hurt) { return; }
 	currentHitPoints = (currentHitPoints - _damage > 0 ? currentHitPoints - _damage : 0);
-	//if (type == EEntityType::Player)
-		//entityManager->GetContext()->m_characterCurrentHealth = currentHitPoints;
 	onDamageReceived.Broadcast(_damage);
 	if (currentHitPoints > 0) 
 	{ 

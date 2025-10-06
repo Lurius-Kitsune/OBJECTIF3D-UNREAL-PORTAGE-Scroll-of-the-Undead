@@ -50,17 +50,19 @@ protected:
 
 	//Sounds
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sounds")
-	TSoftObjectPtr<USoundBase> attackSound;
+	TObjectPtr<UAudioComponent> audioComponent;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sounds")
-	TSoftObjectPtr<USoundBase> hurtSound;
+	TObjectPtr<USoundBase> attackSound;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sounds")
-	TSoftObjectPtr<USoundBase> dieSound;
+	TObjectPtr<USoundBase> hurtSound;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sounds")
-	TSoftObjectPtr<USoundBase> pickupSound1;
+	TObjectPtr<USoundBase> dieSound;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sounds")
-	TSoftObjectPtr<USoundBase> pickupSound2;
+	TObjectPtr<USoundBase> pickupSound1;
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sounds")
-	TSoftObjectPtr<USoundBase> pickupSound3;
+	TObjectPtr<USoundBase> pickupSound2;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Sounds")
+	TObjectPtr<USoundBase> pickupSound3;
 
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnStateChanged, const EEntityState&, state);
 	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "Events")
