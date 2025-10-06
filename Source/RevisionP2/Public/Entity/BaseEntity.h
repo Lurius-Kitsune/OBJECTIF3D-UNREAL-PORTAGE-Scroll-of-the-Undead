@@ -102,6 +102,16 @@ public:
 	UFUNCTION(BlueprintPure)
 	EEntityType GetType() const { return type; }
 
+	UFUNCTION(BlueprintPure)
+	FORCEINLINE UAudioComponent* GetAudioComponent() const { return audioComponent; }
+	UFUNCTION(BlueprintPure)
+	FORCEINLINE USoundBase* GetPickupSound1() const { return pickupSound1; }
+	UFUNCTION(BlueprintPure)
+	FORCEINLINE USoundBase* GetPickupSound2() const { return pickupSound2; }
+	UFUNCTION(BlueprintPure)
+	FORCEINLINE USoundBase* GetPickupSound3() const { return pickupSound3; }
+
+
 	void SetPosition(float _x, float _y);
 	void SetPosition(const FVector2D& _pos);
 	void SetSize(float _x, float _y);

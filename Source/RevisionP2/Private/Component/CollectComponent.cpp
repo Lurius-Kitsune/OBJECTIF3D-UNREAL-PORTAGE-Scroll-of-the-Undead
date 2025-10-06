@@ -5,6 +5,8 @@
 #include "Entity/PaperPlayer.h"
 #include "PaperTileSet.h"
 #include "PaperTileMapComponent.h"
+#include "Components/AudioComponent.h"
+#include "Subsystem/ContextWorldSubsystem.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "PaperTileLayer.h"
 
@@ -24,8 +26,8 @@ void UCollectComponent::BeginPlay()
 {
 	Super::BeginPlay();
 	owner = Cast<APaperPlayer>(GetOwner());
+	contextWorldSubsystem = GetWorld()->GetSubsystem<UContextWorldSubsystem>();
 	// ...
-	
 }
 
 
@@ -54,6 +56,9 @@ void UCollectComponent::Collect(UPaperTileMapComponent* _tileMap,const FVector2D
 		{
 			_tileMap->SetTile(_playerTilePos.X, _playerTilePos.Y-_i, 0, FPaperTileInfo());
 			_tileMap->RebuildCollision();
+			contextWorldSubsystem->AddCoins(25);
+			owner->GetAudioComponent()->SetSound(owner->GetPickupSound1());
+			owner->GetAudioComponent()->Play();
 			break;
 		}
 	}

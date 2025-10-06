@@ -8,6 +8,7 @@
 
 class APaperPlayer;
 class UPaperTileMapComponent;
+class UContextWorldSubsystem;
 struct FPaperTileMetadata;
 
 UCLASS( ClassGroup=(Custom), meta=(BlueprintSpawnableComponent) )
@@ -18,6 +19,9 @@ class REVISIONP2_API UCollectComponent : public UActorComponent
 protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<APaperPlayer> owner;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	TObjectPtr<UContextWorldSubsystem> contextWorldSubsystem;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	bool debugMode = false;
