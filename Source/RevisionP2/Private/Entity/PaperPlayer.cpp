@@ -117,7 +117,7 @@ void APaperPlayer::OnHitboxCollision(UPrimitiveComponent* _me, AActor* _other, U
 	int _x, _y = 0;
 	FVector _relativePlayerTransform = _timeMapComponent->GetComponentTransform().InverseTransformPosition(_me->GetComponentLocation());
 	_tileMap->GetTileCoordinatesFromLocalSpacePosition(_relativePlayerTransform, _x, _y);
-	UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("Player Pos in Tile X: %i Y: %i"), _x, _y));
+	if(debugMode) UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("Player Pos in Tile X: %i Y: %i"), _x, _y));
 	collectComponent->Collect(_timeMapComponent, FVector2D(_x, _y));
 }
 

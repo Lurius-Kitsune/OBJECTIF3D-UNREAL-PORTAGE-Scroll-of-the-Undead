@@ -19,6 +19,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<APaperPlayer> owner;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	bool debugMode = false;
+
 public:	
 	// Sets default values for this component's properties
 	UCollectComponent();

@@ -41,11 +41,15 @@ void UCollectComponent::Collect(UPaperTileMapComponent* _tileMap,const FVector2D
 {
 	for(int _i = 0; _i < 2; _i++)
 	{
-		UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("Tile X: %d Y: %d"), (int32)_playerTilePos.X, (int32)_playerTilePos.Y - _i));
 		FPaperTileInfo _tile = _tileMap->GetTile(_playerTilePos.X, _playerTilePos.Y-_i, 0);
 
 		int _tileIndex = _tile.GetTileIndex();
-		UKismetSystemLibrary::PrintString(GetWorld(), FString::FromInt(_tileIndex));
+		if (debugMode)
+		{
+			UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("Tile X: %d Y: %d"), (int32)_playerTilePos.X, (int32)_playerTilePos.Y - _i));
+			UKismetSystemLibrary::PrintString(GetWorld(), FString::FromInt(_tileIndex));
+		}
+
 		if (_tileIndex == 1595)
 		{
 			_tileMap->SetTile(_playerTilePos.X, _playerTilePos.Y-_i, 0, FPaperTileInfo());
