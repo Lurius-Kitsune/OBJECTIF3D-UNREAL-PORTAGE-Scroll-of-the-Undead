@@ -76,12 +76,14 @@ void ABaseEntity::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 void ABaseEntity::SetPosition(float _x, float _y)
 {
 	position = FVector2D(_x, _y);
+	positionOld = position;
 	SetActorLocation(FVector(position, 0.0f));
 }
 
 void ABaseEntity::SetPosition(const FVector2D& _pos)
 {
 	position = _pos;
+	positionOld = position;
 	SetActorLocation(FVector(position, 0.0f));
 }
 

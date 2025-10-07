@@ -11,6 +11,8 @@
 #include "Map/LevelMapActor.h"
 #include "Subsystem/ContextWorldSubsystem.h"
 #include "Components/BillboardComponent.h"
+
+#include "Entity/PaperEnemy.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 // Sets default values
@@ -75,6 +77,24 @@ void ALevelMapBuilder::BeginPlay()
 	mapActor->GetCollectMapComponent()->RebuildCollision();
 	PlaceMap(_map);
 	PlacePlayer(_map);
+
+	for (int _i = 0; _i < enemy.Num(); _i++)
+	{
+		TArray<FString> _temp;
+		enemy[_i].ParseIntoArray(_temp, TEXT(" "), true);
+		if (_temp.Num() < 4) continue;
+		EEnemyType _type = EEnemyType::None;
+		if (_temp[1] == "Skeleton") _type = EEnemyType::Skeleton;
+		else if (_temp[1] == "Goblin") _type = EEnemyType::Goblin;
+		if (_type == EEnemyType::None) continue;
+		TSubclassOf<APaperEnemy> _blueprint = *enemyBlueprints.Find(_type);
+		if (!_blueprint) continue;
+		TObjectPtr<APaperEnemy> _enemyActor = GetWorld()->SpawnActor<APaperEnemy>(_blueprint, FVector::ZeroVector, FRotator::ZeroRotator);
+		if (!_enemyActor) continue;
+		_enemyActor->SetActorRotation(FRotator(0, 0, 90));
+		FVector2D _spawnPos = FVector2D(FCString::Atoi(*_temp[2]), FCString::Atoi(*_temp[3]));
+		PlaceEntity(_enemyActor, _map, _spawnPos);
+	}
 }
 
 TArray<FString> ALevelMapBuilder::ParseStringFromData(const FString& _data)
@@ -172,12 +192,19 @@ void ALevelMapBuilder::PlacePlayer(const TObjectPtr<UPaperTileMap>& _map)
 	TArray<FString> _out;
 	player[0].ParseIntoArray(_out, TEXT(" "), true);
 	FVector2D _spawnPos = FVector2D(FCString::Atoi(*_out[1]), FCString::Atoi(*_out[2]));
-	_spawnPos.Y = _map->MapHeight * _map->TileHeight - _spawnPos.Y;
-	playerActor->SetActorLocation(FVector(_spawnPos, 0));
+	PlaceEntity(Cast<APaperCharacterActor>(playerActor), _map, _spawnPos);
 	/*FVector _localSpawn = _map->GetTileCenterInLocalSpace(FCString::Atoi(*_out[1]), FCString::Atoi(*_out[2]));
 	UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("Player Spawn Pos X: %f Y: %f"), _localSpawn.X, _localSpawn.Y));
 	playerActor->SetActorLocation(FVector(_localSpawn.X, _map->MapHeight * _map->TileHeight - _localSpawn.Y, 0));
 	UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("Player Actor Pos X: %f Y: %f"), playerActor->GetActorLocation().X, playerActor->GetActorLocation().Y));*/
+}
+
+void ALevelMapBuilder::PlaceEntity(TObjectPtr<APaperCharacterActor> _actor, const TObjectPtr<UPaperTileMap>& _map, const FVector2D& _cords)
+{
+	if (!mapActor || !_actor ) return;
+	FVector2D _spawnCord = FVector2D(_cords.X, _map->MapHeight * _map->TileHeight - _cords.Y);
+	_actor->SetActorLocation(FVector(_spawnCord, 0));
+	_actor->SetPosition(_spawnCord.X, _spawnCord.Y);
 }
 
 // Called every frame

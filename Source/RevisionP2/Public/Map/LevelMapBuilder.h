@@ -12,7 +12,19 @@ class UPaperTileSet;
 class UPaperTileMapComponent;
 class UAudioComponent;
 class ALevelMapActor;
+class APaperEnemy;
+class APaperCharacterActor;
 struct FPaperTileInfo;
+
+UENUM(BlueprintType)
+enum class EEnemyType: uint8
+{
+	Skeleton,
+	Goblin,
+	Mushroom,
+	Winged,
+	None
+};
 
 UCLASS()
 class REVISIONP2_API ALevelMapBuilder : public AActor
@@ -20,6 +32,9 @@ class REVISIONP2_API ALevelMapBuilder : public AActor
 	GENERATED_BODY()
 
 protected:
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Map")
+	TMap<EEnemyType, TSubclassOf<APaperEnemy>> enemyBlueprints;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Map")
 	TSubclassOf<ALevelMapActor> actorBlueprint;
@@ -73,6 +88,8 @@ protected:
 
 	void PlaceMap(const TObjectPtr<UPaperTileMap>& _map);
 	virtual void PlacePlayer(const TObjectPtr<UPaperTileMap>& _map);
+	virtual void PlaceEntity(TObjectPtr<APaperCharacterActor> _actor, const TObjectPtr<UPaperTileMap>& _map, const FVector2D& _cords);
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
