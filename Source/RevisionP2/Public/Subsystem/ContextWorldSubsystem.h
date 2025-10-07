@@ -9,6 +9,8 @@
 /**
  * 
  */
+
+class ALevelMapBuilder;
 UCLASS()
 class REVISIONP2_API UContextWorldSubsystem : public UWorldSubsystem
 {
@@ -36,6 +38,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Context")
 	int playerStones = 0;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Context")
+	TObjectPtr<ALevelMapBuilder> mapBuilder;
+
 public:
 	UFUNCTION(BlueprintPure)
 	FORCEINLINE int GetPlayerCoins() const { return playerCoins; }
@@ -43,6 +48,8 @@ public:
 	FORCEINLINE int GetPlayerBooks() const { return playerBooks; }
 	UFUNCTION(BlueprintPure)
 	FORCEINLINE int GetPlayerStones() const { return playerStones; }
+	UFUNCTION(BlueprintPure)
+	FORCEINLINE ALevelMapBuilder* GetMapActor() const { return mapBuilder; }
 
 	UFUNCTION(BlueprintCallable)
 	void SetPlayerCoins(const int& _value);
@@ -50,6 +57,8 @@ public:
 	void SetPlayerBooks(const int& _value);
 	UFUNCTION(BlueprintCallable)
 	void SetPlayerStones(const int& _value);
+	UFUNCTION(BlueprintCallable)
+	void SetMapActor(ALevelMapBuilder* _mapActor) { mapBuilder = _mapActor; }
 
 	UFUNCTION(BlueprintCallable)
 	void AddCoins(const int& _value);

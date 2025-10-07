@@ -55,7 +55,7 @@ void UCollectComponent::Collect(UPaperTileMapComponent* _tileMap,const FVector2D
 		if (_tileIndex == 1595 || _tileIndex == 1596 || _tileIndex == 1600)
 		{
 			int _value = _tileIndex == 1595 ? 100 : _tileIndex == 1596 ? 10 : 30;
-			CollectCoins(_value, _tileMap, FVector2D(_playerTilePos.X, _playerTilePos.Y - _i);
+			CollectCoins(_value, _tileMap, FVector2D(_playerTilePos.X, _playerTilePos.Y - _i));
 			break;
 		}
 		else if (_tileIndex == 1477)

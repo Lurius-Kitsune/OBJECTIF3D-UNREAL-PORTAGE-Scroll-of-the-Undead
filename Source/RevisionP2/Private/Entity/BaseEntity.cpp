@@ -6,6 +6,11 @@
 #include "Components/AudioComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 #include "Subsystem/EntityManager.h"
+#include "Map/LevelMapBuilder.h"
+#include "Map/LevelMapActor.h"
+#include "PaperTileMapComponent.h"
+#include "PaperTileMap.h"
+#include "Subsystem/ContextWorldSubsystem.h"
 
 // Sets default values
 ABaseEntity::ABaseEntity()
@@ -29,22 +34,25 @@ void ABaseEntity::BeginPlay()
 	if (entityManager) {
 		entityManager->Add(this);
 	}
+
+	contextManager = GetWorld()->GetSubsystem<UContextWorldSubsystem>();
+
 }
 
 // Called every frame
 void ABaseEntity::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
-
+	if (!contextManager) return;
 	float _dt = DeltaTime;
-	float _gravity = 512.0f;
+	float _gravity = contextManager->GetMapActor()->GetGravity();
 	Accelerate(0, -_gravity);
 	//UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Aceleration : x: ") + FString::SanitizeFloat(acceleration.X) + TEXT(" y: ") + FString::SanitizeFloat(acceleration.Y));
 	AddVelocity(acceleration.X * _dt, acceleration.Y * _dt);
 	//UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Velocity : x: ") + FString::SanitizeFloat(velocity.X) + TEXT(" y: ") + FString::SanitizeFloat(velocity.Y));
 	SetAcceleration(0.0f, 0.0f);
 	FVector2D _frictionValue = FVector2D::ZeroVector;
-	_frictionValue = friction;
+	_frictionValue = contextManager->GetMapActor()->GetFriction();
 
 	const float& _frictionX = (_frictionValue.X * speed.X) * _dt;
 	const float& _frictionY = (_frictionValue.Y * speed.Y) * _dt;
@@ -114,6 +122,7 @@ void ABaseEntity::Move(const FVector2D& _movement)
 	position += _movement;
 	FHitResult _result = FHitResult();
 	SetActorLocation(FVector(position.X, positionOld.Y, zOffset), true, &_result);
+	collidingOnX = _result.bBlockingHit;
 	if (_result.bBlockingHit) {
 		velocity.X = 0.0f;
 		position.X = positionOld.X;
@@ -124,19 +133,24 @@ void ABaseEntity::Move(const FVector2D& _movement)
 		position.Y = positionOld.Y;
 	}
 	if (position.X < 0) {
+		velocity.X = 0.0f;
 		position.X = 0;
 	}
 	if (position.Y < 0) {
+		velocity.Y = 0.0f;
 		position.Y = 0;
 	}
-	/*sf::Vector2u mapSize = m_entityManager->GetContext()->m_gameMap->GetMapSize();
 	
-	else if (m_position.x > (mapSize.x) * Sheet::Tile_Size) {
-		m_position.x = (mapSize.x) * Sheet::Tile_Size;
+	TObjectPtr<ALevelMapBuilder> _mapActor = GetWorld()->GetSubsystem<UContextWorldSubsystem>()->GetMapActor();
+
+	FVector2D _mapSize = _mapActor->GetMapActor()->GetRealMapSize();
+	if (position.X > _mapSize.X ) {
+		position.X = _mapSize.X;
+		velocity.X = 0.0f;
 	}
 
 	
-	else if (m_position.y > (mapSize.y + 1) * Sheet::Tile_Size) {
+	/*else if (m_position.y > (mapSize.y + 1) * Sheet::Tile_Size) {
 		m_position.y = (mapSize.y + 1) * Sheet::Tile_Size;
 		SetState(EntityState::Dying);
 	}*/

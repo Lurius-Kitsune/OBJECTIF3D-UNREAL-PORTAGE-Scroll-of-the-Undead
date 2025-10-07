@@ -25,4 +25,10 @@ public:
 	
 	UFUNCTION(BlueprintPure, Category = "Map")
 	UPaperTileMapComponent* GetCollectMapComponent() const { return collectMapComponent; }
+
+	UFUNCTION(BlueprintPure, Category = "Map")
+	FVector2D GetMapSize() const;
+
+	UFUNCTION(BlueprintPure, Category = "Map")
+	FVector2D GetRealMapSize() const;
 };

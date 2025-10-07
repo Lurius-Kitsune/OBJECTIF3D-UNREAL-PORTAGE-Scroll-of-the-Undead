@@ -10,6 +10,7 @@
 class UBoxComponent;
 class UFlipbookComponent;
 class UEntityManager;
+class UContextWorldSubsystem;
 
 UCLASS()
 class REVISIONP2_API ABaseEntity : public APawn
@@ -69,9 +70,15 @@ protected:
 	FOnStateChanged onStateChanged;
 
 
+	UPROPERTY()
+	bool collidingOnX = false;
+
 	// Subsystem
 	UPROPERTY()
 	TObjectPtr<UEntityManager> entityManager;
+
+	UPROPERTY()
+	TObjectPtr<UContextWorldSubsystem> contextManager;
 
 	// TODO : DrawDebug
 public:

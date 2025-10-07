@@ -111,6 +111,7 @@ void APaperCharacterActor::GetHurt(const int& _damage)
 		if (debugMode) UKismetSystemLibrary::PrintString(GetWorld(), TEXT("HURT entity :") + name + TEXT(" HP : ") + FString::FromInt(currentHitPoints) + TEXT("/") + FString::FromInt(hitPoints), true, true, FLinearColor::Red);
 	}
 	else {
+		velocity = FVector2D::ZeroVector;
 		SetState(EEntityState::Dying);
 	}
 }

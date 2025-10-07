@@ -4,12 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/Actor.h"
+#include "Map/MapDataAssets.h"
 #include "LevelMapBuilder.generated.h"
 
-class UMapDataAssets;
 class UPaperTileMap;
 class UPaperTileSet;
 class UPaperTileMapComponent;
+class UAudioComponent;
 class ALevelMapActor;
 struct FPaperTileInfo;
 
@@ -21,7 +22,7 @@ class REVISIONP2_API ALevelMapBuilder : public AActor
 protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Map")
-	TSoftClassPtr<ALevelMapActor> actorBlueprint;
+	TSubclassOf<ALevelMapActor> actorBlueprint;
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UBillboardComponent> icon;
@@ -46,6 +47,12 @@ protected:
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug")
 	TObjectPtr<ALevelMapActor> mapActor;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug")
+	TObjectPtr<AActor> playerActor;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
+	TObjectPtr<UAudioComponent> audioComponent;
 	
 public:	
 	// Sets default values for this actor's properties
@@ -63,8 +70,22 @@ protected:
 	void GenerateCell(const FString& _data, const int& _layer, TObjectPtr<UPaperTileMap> _map);
 	FPaperTileInfo GenerateTileInfo(const int& _index, const TObjectPtr<UPaperTileSet>& _tileSet);
 
+
+	void PlaceMap(const TObjectPtr<UPaperTileMap>& _map);
+	virtual void PlacePlayer(const TObjectPtr<UPaperTileMap>& _map);
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UFUNCTION(BlueprintPure)
+	FORCEINLINE ALevelMapActor* GetMapActor() const { return mapActor; }
+	UFUNCTION(BlueprintPure)
+	FORCEINLINE AActor* GetPlayerActor() const { return playerActor; }
+	UFUNCTION(BlueprintPure)
+	FORCEINLINE UMapDataAssets* GetMapData() const { return data; }
+
+	UFUNCTION(BlueprintPure) 
+	FORCEINLINE float GetGravity() const { return data ? data->gravity : -980.0f; }
+	UFUNCTION(BlueprintPure)
+	FORCEINLINE FVector2D GetFriction() const { return data ? data->friction : FVector2D::ZeroVector; }
 };

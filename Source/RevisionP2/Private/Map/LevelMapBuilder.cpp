@@ -6,8 +6,10 @@
 #include "PaperTileMap.h"
 #include "PaperTileSet.h"
 #include "PaperTileMapComponent.h"
+#include "Components/AudioComponent.h"
 #include "PaperTileLayer.h"
 #include "Map/LevelMapActor.h"
+#include "Subsystem/ContextWorldSubsystem.h"
 #include "Components/BillboardComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 
@@ -18,6 +20,7 @@ ALevelMapBuilder::ALevelMapBuilder()
 	PrimaryActorTick.bCanEverTick = true;
 	icon = CreateDefaultSubobject<UBillboardComponent>(TEXT("Icon"));
 	icon->SetupAttachment(RootComponent);
+	audioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
 
 }
 
@@ -25,7 +28,17 @@ ALevelMapBuilder::ALevelMapBuilder()
 void ALevelMapBuilder::BeginPlay()
 {
 	Super::BeginPlay();
-	mapActor = GetWorld()->SpawnActor<ALevelMapActor>(actorBlueprint.Get(), FVector::ZeroVector, FRotator::ZeroRotator);
+	if (!data) return;
+	if (data->music && audioComponent)
+	{
+		audioComponent->SetSound(data->music);
+		audioComponent->Play();
+		audioComponent->bIsUISound = true;
+		audioComponent->bAllowSpatialization = false;
+	}
+	playerActor = GetWorld()->GetFirstPlayerController()->GetPawn();
+	mapActor = GetWorld()->SpawnActor<ALevelMapActor>(actorBlueprint, FVector::ZeroVector, FRotator::ZeroRotator);
+	GetWorld()->GetSubsystem<UContextWorldSubsystem>()->SetMapActor(this);
 	TArray<FString> _out = ParseStringFromData(data->mapDataString);
 	int _lineCount = _out.Num();
 	for(int _i = 0; _i < _lineCount; _i++)
@@ -52,6 +65,7 @@ void ALevelMapBuilder::BeginPlay()
 		}
 	}
 
+	if (!mapActor) return;
 	TObjectPtr<UPaperTileMap> _map = CreateInstanceTileMap(mapActor->GetRenderComponent());
 	TObjectPtr<UPaperTileMap> _collectMap = CreateInstanceTileMap(mapActor->GetCollectMapComponent());
 	CreateTileMapFromData(_map);
@@ -59,6 +73,8 @@ void ALevelMapBuilder::BeginPlay()
 	CreateCollectibleMap(_collectMap);
 	mapActor->GetRenderComponent()->RebuildCollision();
 	mapActor->GetCollectMapComponent()->RebuildCollision();
+	PlaceMap(_map);
+	PlacePlayer(_map);
 }
 
 TArray<FString> ALevelMapBuilder::ParseStringFromData(const FString& _data)
@@ -140,6 +156,28 @@ FPaperTileInfo ALevelMapBuilder::GenerateTileInfo(const int& _index, const TObje
 	_tileInfo.TileSet = _tileSet;
 	_tileInfo.PackedTileIndex = _index;
 	return _tileInfo;
+}
+
+void ALevelMapBuilder::PlaceMap(const TObjectPtr<UPaperTileMap>& _map)
+{
+	if (!mapActor) return;
+	mapActor->SetActorRotation(FRotator(0, 0, 90));
+	mapActor->SetActorLocation(FVector(0,_map->MapHeight * _map->TileHeight + _map->TileHeight/2,0));
+}
+
+void ALevelMapBuilder::PlacePlayer(const TObjectPtr<UPaperTileMap>& _map)
+{
+	if (!mapActor || !playerActor) return;
+	if (player.IsEmpty()) return;
+	TArray<FString> _out;
+	player[0].ParseIntoArray(_out, TEXT(" "), true);
+	FVector2D _spawnPos = FVector2D(FCString::Atoi(*_out[1]), FCString::Atoi(*_out[2]));
+	_spawnPos.Y = _map->MapHeight * _map->TileHeight - _spawnPos.Y;
+	playerActor->SetActorLocation(FVector(_spawnPos, 0));
+	/*FVector _localSpawn = _map->GetTileCenterInLocalSpace(FCString::Atoi(*_out[1]), FCString::Atoi(*_out[2]));
+	UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("Player Spawn Pos X: %f Y: %f"), _localSpawn.X, _localSpawn.Y));
+	playerActor->SetActorLocation(FVector(_localSpawn.X, _map->MapHeight * _map->TileHeight - _localSpawn.Y, 0));
+	UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("Player Actor Pos X: %f Y: %f"), playerActor->GetActorLocation().X, playerActor->GetActorLocation().Y));*/
 }
 
 // Called every frame
