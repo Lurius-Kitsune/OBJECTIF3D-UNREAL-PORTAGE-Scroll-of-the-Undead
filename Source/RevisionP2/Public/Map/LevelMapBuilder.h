@@ -29,6 +29,9 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Map")
 	TObjectPtr<UMapDataAssets> data;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Map")
+	TArray<FString> collectibleList;
+
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug")
 	TArray<FString> tile;
 

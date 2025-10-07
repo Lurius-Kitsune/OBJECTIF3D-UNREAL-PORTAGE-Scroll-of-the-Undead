@@ -52,17 +52,49 @@ void UCollectComponent::Collect(UPaperTileMapComponent* _tileMap,const FVector2D
 			UKismetSystemLibrary::PrintString(GetWorld(), FString::FromInt(_tileIndex));
 		}
 
-		if (_tileIndex == 1595)
+		if (_tileIndex == 1595 || _tileIndex == 1596 || _tileIndex == 1600)
 		{
-			_tileMap->SetTile(_playerTilePos.X, _playerTilePos.Y-_i, 0, FPaperTileInfo());
-			_tileMap->RebuildCollision();
-			contextWorldSubsystem->AddCoins(25);
-			owner->GetAudioComponent()->SetSound(owner->GetPickupSound1());
-			owner->GetAudioComponent()->Play();
+			int _value = _tileIndex == 1595 ? 100 : _tileIndex == 1596 ? 10 : 30;
+			CollectCoins(_value, _tileMap, FVector2D(_playerTilePos.X, _playerTilePos.Y - _i);
 			break;
+		}
+		else if (_tileIndex == 1477)
+		{
+			CollectBooks(1, _tileMap, FVector2D(_playerTilePos.X, _playerTilePos.Y - _i));
+		}
+		else if (_tileIndex == 1631)
+		{
+			CollectStone(1, _tileMap, FVector2D(_playerTilePos.X, _playerTilePos.Y - _i));
 		}
 	}
 
 
+}
+
+void UCollectComponent::CollectCoins(const int& _value, UPaperTileMapComponent* _tileMap, const FVector2D& _playerTilePos)
+{
+	_tileMap->SetTile(_playerTilePos.X, _playerTilePos.Y, 0, FPaperTileInfo());
+	_tileMap->RebuildCollision();
+	contextWorldSubsystem->AddCoins(_value);
+	owner->GetAudioComponent()->SetSound(owner->GetPickupSound1());
+	owner->GetAudioComponent()->Play();
+}
+
+void UCollectComponent::CollectBooks(const int& _value, UPaperTileMapComponent* _tileMap, const FVector2D& _playerTilePos)
+{
+	_tileMap->SetTile(_playerTilePos.X, _playerTilePos.Y, 0, FPaperTileInfo());
+	_tileMap->RebuildCollision();
+	contextWorldSubsystem->AddBooks(_value);
+	owner->GetAudioComponent()->SetSound(owner->GetPickupSound2());
+	owner->GetAudioComponent()->Play();
+}
+
+void UCollectComponent::CollectStone(const int& _value, UPaperTileMapComponent* _tileMap, const FVector2D& _playerTilePos)
+{
+	_tileMap->SetTile(_playerTilePos.X, _playerTilePos.Y, 0, FPaperTileInfo());
+	_tileMap->RebuildCollision();
+	contextWorldSubsystem->AddStones(_value);
+	owner->GetAudioComponent()->SetSound(owner->GetPickupSound3());
+	owner->GetAudioComponent()->Play();
 }
 

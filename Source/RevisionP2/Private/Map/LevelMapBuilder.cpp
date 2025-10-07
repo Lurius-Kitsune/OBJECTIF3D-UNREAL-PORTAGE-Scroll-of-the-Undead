@@ -32,8 +32,11 @@ void ALevelMapBuilder::BeginPlay()
 	{
 		if (_out[_i].StartsWith("TILE"))
 		{
-			if (_out[_i].Contains("1595"))
+			TArray<FString> _temp;
+			_out[_i].ParseIntoArray(_temp, TEXT(" "), true);
+			if (collectibleList.Contains(_temp[1]))
 			{
+				
 				collectible.Add(_out[_i]);
 				continue;
 			}
@@ -92,7 +95,15 @@ TObjectPtr<UPaperTileMap> ALevelMapBuilder::CreateTileMapFromData(TObjectPtr<UPa
 
 TObjectPtr<UPaperTileMap> ALevelMapBuilder::CreateCollectibleMap(TObjectPtr<UPaperTileMap> _map)
 {
-	return TObjectPtr<UPaperTileMap>();
+	if (!data) return nullptr;
+	TObjectPtr<UPaperTileSet> _tileSet = data->tileSet;
+	if (!_tileSet) return nullptr;
+	int _numberTile = collectible.Num();
+	for(int _i = 0; _i < _numberTile; _i++)
+	{
+		GenerateCell(collectible[_i], 0, _map);
+	}
+	return _map;
 }
 
 void ALevelMapBuilder::GenerateBackgroundLayer(TObjectPtr<UPaperTileMap> _map)

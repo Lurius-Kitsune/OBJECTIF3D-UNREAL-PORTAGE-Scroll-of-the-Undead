@@ -40,4 +40,8 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	virtual void Collect(UPaperTileMapComponent* _tileMap, const FVector2D& _playerTilePos);
+
+	virtual void CollectCoins(const int& _value, UPaperTileMapComponent* _tileMap, const FVector2D& _playerTilePos);
+	virtual void CollectBooks(const int& _value, UPaperTileMapComponent* _tileMap, const FVector2D& _playerTilePos);
+	virtual void CollectStone(const int& _value, UPaperTileMapComponent* _tileMap, const FVector2D& _playerTilePos);
 };
