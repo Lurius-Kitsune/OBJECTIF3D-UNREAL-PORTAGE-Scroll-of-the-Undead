@@ -11,6 +11,9 @@
 #include <Camera/CameraComponent.h>
 #include "Component/CollectComponent.h"
 #include "PaperTileMapComponent.h"
+#include "Subsystem/ContextWorldSubsystem.h"
+#include "Map/LevelMapBuilder.h"
+#include "Map/LevelMapActor.h"
 #include "Components/BoxComponent.h"
 #include <Kismet/KismetSystemLibrary.h>
 
@@ -65,7 +68,27 @@ void APaperPlayer::Init()
 void APaperPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+	
+	//FVector _cameraView = camera->GetComponentLocation();
+	/*FMinimalViewInfo _cameraView;
+	camera->GetCameraView(DeltaTime, _cameraView);
+	FVector _cameraLocation = _cameraView.Location;
+	FVector _mapPos = contextManager->GetMapActor()->GetMapActor()->GetActorLocation();
+	FVector2D _realMapSize = contextManager->GetMapActor()->GetMapActor()->GetRealMapSize();
 
+	float _minX = _mapPos.X + (_cameraLocation.X / 2);
+	float _maxX = _mapPos.X + _realMapSize.X - (_cameraLocation.X / 2);
+	float _maxY = _mapPos.Y - (_cameraLocation.Y / 2);
+	float _minY = _mapPos.Y - _realMapSize.Y - (_cameraLocation.Y / 2);
+	UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("Cam MinX: %f MaxX: %f MinY: %f MaxY: %f"), _minX, _maxX, _minY, _maxY), true, true, FLinearColor::Green);
+
+	FVector _camLocation = camera->GetComponentLocation();
+	_camLocation.X = FMath::Clamp(_camLocation.X, _minX, _maxX);
+	_camLocation.Y = FMath::Clamp(_camLocation.Y, _minY, _maxY);
+
+	UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("Cam Pos X: %f Y: %f"), _camLocation.X, _camLocation.Y), true, true, FLinearColor::Yellow);
+
+	camera->SetWorldLocation(_camLocation);*/
 }
 
 // Called to bind functionality to input
