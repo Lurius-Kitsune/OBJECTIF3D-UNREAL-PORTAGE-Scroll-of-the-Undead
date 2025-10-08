@@ -17,12 +17,13 @@ class REVISIONP2_API ALevelMapActor : public APaperTileMapActor
 	GENERATED_BODY()
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Map")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Components")
 	TObjectPtr<UPaperTileMapComponent> collectMapComponent;
 
 public:	
 	ALevelMapActor();
 	
+#pragma region Getters
 	UFUNCTION(BlueprintPure, Category = "Map")
 	UPaperTileMapComponent* GetCollectMapComponent() const { return collectMapComponent; }
 
@@ -31,4 +32,6 @@ public:
 
 	UFUNCTION(BlueprintPure, Category = "Map")
 	FVector2D GetRealMapSize() const;
+#pragma endregion
+
 };

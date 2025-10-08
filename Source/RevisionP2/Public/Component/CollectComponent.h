@@ -34,14 +34,15 @@ protected:
 	// Called when the game starts
 	virtual void BeginPlay() override;
 
+	virtual void CollectCoins(const int& _value, TObjectPtr<UPaperTileMapComponent> _tileMap, const FVector2D& _playerTilePos);
+	virtual void CollectBooks(const int& _value, TObjectPtr<UPaperTileMapComponent> _tileMap, const FVector2D& _playerTilePos);
+	virtual void CollectStone(const int& _value, TObjectPtr<UPaperTileMapComponent> _tileMap, const FVector2D& _playerTilePos);
+
+	void ClearTile(TObjectPtr<UPaperTileMapComponent> _tileMap, const FVector2D& _playerTilePos);
 public:	
 	// Called every frame
 	virtual void TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction) override;
 
 	UFUNCTION(BlueprintCallable)
 	virtual void Collect(UPaperTileMapComponent* _tileMap, const FVector2D& _playerTilePos);
-
-	virtual void CollectCoins(const int& _value, UPaperTileMapComponent* _tileMap, const FVector2D& _playerTilePos);
-	virtual void CollectBooks(const int& _value, UPaperTileMapComponent* _tileMap, const FVector2D& _playerTilePos);
-	virtual void CollectStone(const int& _value, UPaperTileMapComponent* _tileMap, const FVector2D& _playerTilePos);
 };

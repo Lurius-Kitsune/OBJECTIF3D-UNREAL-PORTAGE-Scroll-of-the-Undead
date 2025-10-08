@@ -9,13 +9,14 @@
 
 class UPaperTileMap;
 class UPaperTileSet;
-class UPaperTileMapComponent;
-class UAudioComponent;
 class ALevelMapActor;
 class APaperEnemy;
 class APaperCharacterActor;
 enum class ELevelType : uint8;
 struct FPaperTileInfo;
+
+class UPaperTileMapComponent;
+class UAudioComponent;
 
 UENUM(BlueprintType)
 enum class EEnemyType: uint8
@@ -34,44 +35,43 @@ class REVISIONP2_API ALevelMapBuilder : public AActor
 
 protected:
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Map")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Map|Data")
 	TMap<EEnemyType, TSubclassOf<APaperEnemy>> enemyBlueprints;
 
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Map")
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Map|Data")
 	TSubclassOf<ALevelMapActor> actorBlueprint;
 
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, Category = "Components")
 	TObjectPtr<UBillboardComponent> icon;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Map")
-	TMap<ELevelType, TObjectPtr<UMapDataAssets>> mapDataAssets;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Map")
-	TObjectPtr<UMapDataAssets> data;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Map")
-	TArray<FString> collectibleList;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug")
-	TArray<FString> tile;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug")
-	TArray<FString> player;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug")
-	TArray<FString> enemy;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug")
-	TArray<FString> collectible;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug")
-	TObjectPtr<ALevelMapActor> mapActor;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug")
-	TObjectPtr<AActor> playerActor;
-
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UAudioComponent> audioComponent;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Map|Data")
+	TMap<ELevelType, TObjectPtr<UMapDataAssets>> mapDataAssets;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category="Map|Debug")
+	TObjectPtr<UMapDataAssets> data;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Map|Debug")
+	TArray<FString> collectibleList;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Map|Debug")
+	TArray<FString> tile;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Map|Debug")
+	TArray<FString> player;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Map|Debug")
+	TArray<FString> enemy;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Map|Debug")
+	TArray<FString> collectible;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Map|Debug")
+	TObjectPtr<ALevelMapActor> mapActor;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Map|Debug")
+	TObjectPtr<AActor> playerActor;
 	
 public:	
 	// Sets default values for this actor's properties
@@ -81,18 +81,30 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+	void SetupVariables();
+	void ParseAllData();
+
+
 	virtual TArray<FString> ParseStringFromData(const FString& _data);
+
 	virtual TObjectPtr<UPaperTileMap> CreateInstanceTileMap(TObjectPtr<UPaperTileMapComponent> _component);
 	virtual TObjectPtr<UPaperTileMap> CreateTileMapFromData(TObjectPtr<UPaperTileMap> _map);
 	virtual TObjectPtr<UPaperTileMap> CreateCollectibleMap(TObjectPtr<UPaperTileMap> _map);
+
+#pragma region Generator
 	virtual void GenerateBackgroundLayer(TObjectPtr<UPaperTileMap> _map);
 	void GenerateCell(const FString& _data, const int& _layer, TObjectPtr<UPaperTileMap> _map);
 	FPaperTileInfo GenerateTileInfo(const int& _index, const TObjectPtr<UPaperTileSet>& _tileSet);
+#pragma endregion
 
-
+#pragma region Placer
+	void PlaceMusic();
 	void PlaceMap(const TObjectPtr<UPaperTileMap>& _map);
 	virtual void PlacePlayer(const TObjectPtr<UPaperTileMap>& _map);
 	virtual void PlaceEntity(TObjectPtr<APaperCharacterActor> _actor, const TObjectPtr<UPaperTileMap>& _map, const FVector2D& _cords);
+	virtual void PlaceEnemyInMap(const TObjectPtr<UPaperTileMap>& _map);
+#pragma endregion
+
 
 public:	
 	// Called every frame

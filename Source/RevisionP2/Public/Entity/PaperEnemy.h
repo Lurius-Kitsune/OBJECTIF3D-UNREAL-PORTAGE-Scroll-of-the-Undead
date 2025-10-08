@@ -16,10 +16,10 @@ class REVISIONP2_API APaperEnemy : public APaperCharacterActor
 	
 protected:
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Entity|IA")
 	FVector2D destination;
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Entity|IA")
 	bool hasDestination = false;
 
 public:

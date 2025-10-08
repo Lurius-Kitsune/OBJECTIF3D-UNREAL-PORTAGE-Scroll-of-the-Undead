@@ -23,6 +23,7 @@ class REVISIONP2_API APaperCharacterActor : public ABaseEntity
 	
 protected:
 
+#pragma region Events
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnMovement, const FVector2D&, direction);
 	UPROPERTY(BlueprintAssignable, BlueprintCallable, Category = "Events")
 	FOnMovement onMovement;
@@ -38,22 +39,25 @@ protected:
 	DECLARE_DYNAMIC_MULTICAST_DELEGATE_OneParam(FOnDamageReceived, const int&, damageValue);
 	UPROPERTY(BlueprintAssignable, Category = "Events")
 	FOnDamageReceived onDamageReceived;
+#pragma endregion
 
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UPaperFlipbookComponent> sprite;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UPaperZDAnimationComponent> animation;
-
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
-	EEntityDirection direction = EEntityDirection::Right;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	float jumpVelocity = 600.0f;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int hitPoints = 200;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int currentHitPoints = 200;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UBoxComponent> attackHitbox;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Entity")
+	EEntityDirection direction = EEntityDirection::Right;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Entity")
+	float jumpVelocity = 600.0f;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Entity")
+	int hitPoints = 200;
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Debug|Entity")
+	int currentHitPoints = 200;
+
 
 public:
 	// Sets default values for this pawn's properties
@@ -70,6 +74,24 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+
+#pragma region Getters
+	UFUNCTION(BlueprintPure)
+	FORCEINLINE EEntityDirection GetDirection() const { return direction; }
+
+	UFUNCTION(BlueprintPure)
+	FORCEINLINE int GetHitpoints() const { return hitPoints; }
+#pragma endregion
+
+#pragma region Setters
+	UFUNCTION(BlueprintCallable)
+	void SetDirection(const EEntityDirection& _dir);
+
+	UFUNCTION(BlueprintCallable)
+	void ToogleAttackHitbox(const bool _enable);
+#pragma endregion
+
+#pragma region Character Action
 	UFUNCTION(BlueprintCallable)
 	void Move(const EEntityDirection& _value);
 	void Move(const FInputActionValue& _value);
@@ -80,15 +102,8 @@ public:
 	UFUNCTION(BlueprintCallable)
 	void GetHurt(const int& _damage);
 
+#pragma endregion
 
-	//virtual void OnEntityCollision(EEntityBase l_collider, bool l_attack) = 0;
-	UFUNCTION(BlueprintPure)
-	FORCEINLINE EEntityDirection GetDirection() const { return direction; }
-	UFUNCTION(BlueprintCallable)
-	void SetDirection(const EEntityDirection& _dir);
-	UFUNCTION(BlueprintPure)
-	FORCEINLINE int GetHitpoints() const { return hitPoints; }
 
-	UFUNCTION(BlueprintCallable)
-	void ToogleAttackHitbox(const bool _enable);
+
 };

@@ -19,7 +19,6 @@ ABaseEntity::ABaseEntity()
 	PrimaryActorTick.bCanEverTick = true;
 	hitbox = CreateDefaultSubobject<UBoxComponent>(TEXT("Hitbox"));
 	hitbox->SetupAttachment(RootComponent);
-
 	audioComponent = CreateDefaultSubobject<UAudioComponent>(TEXT("AudioComponent"));
 
 
@@ -31,12 +30,8 @@ void ABaseEntity::BeginPlay()
 	Super::BeginPlay();
 	position = FVector2D(GetActorLocation());
 	entityManager = GetWorld()->GetSubsystem<UEntityManager>();
-	if (entityManager) {
-		entityManager->Add(this);
-	}
-
+	if (entityManager) entityManager->Add(this);
 	contextManager = GetWorld()->GetSubsystem<UContextWorldSubsystem>();
-
 }
 
 // Called every frame
@@ -44,22 +39,17 @@ void ABaseEntity::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 	if (!contextManager) return;
-	float _dt = DeltaTime;
 	float _gravity = contextManager->GetMapActor()->GetGravity();
 	Accelerate(0, -_gravity);
-	//UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Aceleration : x: ") + FString::SanitizeFloat(acceleration.X) + TEXT(" y: ") + FString::SanitizeFloat(acceleration.Y));
-	AddVelocity(acceleration.X * _dt, acceleration.Y * _dt);
-	//UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Velocity : x: ") + FString::SanitizeFloat(velocity.X) + TEXT(" y: ") + FString::SanitizeFloat(velocity.Y));
+	AddVelocity(acceleration.X * DeltaTime, acceleration.Y * DeltaTime);
 	SetAcceleration(0.0f, 0.0f);
 	FVector2D _frictionValue = FVector2D::ZeroVector;
 	_frictionValue = contextManager->GetMapActor()->GetFriction();
 
-	const float& _frictionX = (_frictionValue.X * speed.X) * _dt;
-	const float& _frictionY = (_frictionValue.Y * speed.Y) * _dt;
-	//UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Friction : x: ") + FString::SanitizeFloat(_frictionX) + TEXT(" y: ") + FString::SanitizeFloat(_frictionY));
+	const float& _frictionX = (_frictionValue.X * speed.X) * DeltaTime;
+	const float& _frictionY = (_frictionValue.Y * speed.Y) * DeltaTime;
 	ApplyFriction(_frictionX, _frictionY);
-	FVector2D _deltaPos = velocity * _dt;
-	//UKismetSystemLibrary::PrintString(GetWorld(), TEXT("DeltaPos : x: ") + FString::SanitizeFloat(_deltaPos.X) + TEXT(" y: ") + FString::SanitizeFloat(_deltaPos.Y));
+	FVector2D _deltaPos = velocity * DeltaTime;
 	Move(_deltaPos);
 }
 
@@ -70,14 +60,10 @@ void ABaseEntity::SetupPlayerInputComponent(UInputComponent* PlayerInputComponen
 
 }
 
-//[U]
-//inline FVector2D ABaseEntity::GetSize() const { return hitbox->GetScaledBoxExtent() * 2.0f; }
-
 void ABaseEntity::SetPosition(float _x, float _y)
 {
 	position = FVector2D(_x, _y);
-	positionOld = position;
-	SetActorLocation(FVector(position, 0.0f));
+	SetPosition(position);
 }
 
 void ABaseEntity::SetPosition(const FVector2D& _pos)

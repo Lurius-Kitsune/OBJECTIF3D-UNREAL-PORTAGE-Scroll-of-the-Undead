@@ -42,6 +42,8 @@ protected:
 	TObjectPtr<ALevelMapBuilder> mapBuilder;
 
 public:
+
+#pragma region Getters
 	UFUNCTION(BlueprintPure)
 	FORCEINLINE int GetPlayerCoins() const { return playerCoins; }
 	UFUNCTION(BlueprintPure)
@@ -50,7 +52,9 @@ public:
 	FORCEINLINE int GetPlayerStones() const { return playerStones; }
 	UFUNCTION(BlueprintPure)
 	FORCEINLINE ALevelMapBuilder* GetMapActor() const { return mapBuilder; }
+#pragma endregion
 
+#pragma region Setters
 	UFUNCTION(BlueprintCallable)
 	void SetPlayerCoins(const int& _value);
 	UFUNCTION(BlueprintCallable)
@@ -59,11 +63,16 @@ public:
 	void SetPlayerStones(const int& _value);
 	UFUNCTION(BlueprintCallable)
 	void SetMapActor(ALevelMapBuilder* _mapActor) { mapBuilder = _mapActor; }
+#pragma endregion
 
+#pragma region Adders
 	UFUNCTION(BlueprintCallable)
 	void AddCoins(const int& _value);
 	UFUNCTION(BlueprintCallable)
 	void AddBooks(const int& _value);
 	UFUNCTION(BlueprintCallable)
 	void AddStones(const int& _value);
+#pragma endregion
+
+
 };

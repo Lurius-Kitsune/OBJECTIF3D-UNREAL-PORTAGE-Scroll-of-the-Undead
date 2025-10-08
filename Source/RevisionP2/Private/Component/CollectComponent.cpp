@@ -27,7 +27,6 @@ void UCollectComponent::BeginPlay()
 	Super::BeginPlay();
 	owner = Cast<APaperPlayer>(GetOwner());
 	contextWorldSubsystem = GetWorld()->GetSubsystem<UContextWorldSubsystem>();
-	// ...
 }
 
 
@@ -35,8 +34,38 @@ void UCollectComponent::BeginPlay()
 void UCollectComponent::TickComponent(float DeltaTime, ELevelTick TickType, FActorComponentTickFunction* ThisTickFunction)
 {
 	Super::TickComponent(DeltaTime, TickType, ThisTickFunction);
+}
 
-	// ...
+
+void UCollectComponent::CollectCoins(const int& _value, TObjectPtr<UPaperTileMapComponent> _tileMap, const FVector2D& _playerTilePos)
+{
+	ClearTile(_tileMap, _playerTilePos);
+	contextWorldSubsystem->AddCoins(_value);
+	owner->GetAudioComponent()->SetSound(owner->GetPickupSound1());
+	owner->GetAudioComponent()->Play();
+}
+
+void UCollectComponent::CollectBooks(const int& _value, TObjectPtr<UPaperTileMapComponent> _tileMap, const FVector2D& _playerTilePos)
+{
+	ClearTile(_tileMap, _playerTilePos);
+	contextWorldSubsystem->AddBooks(_value);
+	owner->GetAudioComponent()->SetSound(owner->GetPickupSound2());
+	owner->GetAudioComponent()->Play();
+}
+
+void UCollectComponent::CollectStone(const int& _value, TObjectPtr<UPaperTileMapComponent> _tileMap, const FVector2D& _playerTilePos)
+{
+	ClearTile(_tileMap, _playerTilePos);
+	_tileMap->RebuildCollision();
+	contextWorldSubsystem->AddStones(_value);
+	owner->GetAudioComponent()->SetSound(owner->GetPickupSound3());
+	owner->GetAudioComponent()->Play();
+}
+
+void UCollectComponent::ClearTile(TObjectPtr<UPaperTileMapComponent> _tileMap, const FVector2D& _playerTilePos)
+{
+	_tileMap->SetTile(_playerTilePos.X, _playerTilePos.Y, 0, FPaperTileInfo());
+	_tileMap->RebuildCollision();
 }
 
 void UCollectComponent::Collect(UPaperTileMapComponent* _tileMap,const FVector2D& _playerTilePos)
@@ -70,31 +99,3 @@ void UCollectComponent::Collect(UPaperTileMapComponent* _tileMap,const FVector2D
 
 
 }
-
-void UCollectComponent::CollectCoins(const int& _value, UPaperTileMapComponent* _tileMap, const FVector2D& _playerTilePos)
-{
-	_tileMap->SetTile(_playerTilePos.X, _playerTilePos.Y, 0, FPaperTileInfo());
-	_tileMap->RebuildCollision();
-	contextWorldSubsystem->AddCoins(_value);
-	owner->GetAudioComponent()->SetSound(owner->GetPickupSound1());
-	owner->GetAudioComponent()->Play();
-}
-
-void UCollectComponent::CollectBooks(const int& _value, UPaperTileMapComponent* _tileMap, const FVector2D& _playerTilePos)
-{
-	_tileMap->SetTile(_playerTilePos.X, _playerTilePos.Y, 0, FPaperTileInfo());
-	_tileMap->RebuildCollision();
-	contextWorldSubsystem->AddBooks(_value);
-	owner->GetAudioComponent()->SetSound(owner->GetPickupSound2());
-	owner->GetAudioComponent()->Play();
-}
-
-void UCollectComponent::CollectStone(const int& _value, UPaperTileMapComponent* _tileMap, const FVector2D& _playerTilePos)
-{
-	_tileMap->SetTile(_playerTilePos.X, _playerTilePos.Y, 0, FPaperTileInfo());
-	_tileMap->RebuildCollision();
-	contextWorldSubsystem->AddStones(_value);
-	owner->GetAudioComponent()->SetSound(owner->GetPickupSound3());
-	owner->GetAudioComponent()->Play();
-}
-

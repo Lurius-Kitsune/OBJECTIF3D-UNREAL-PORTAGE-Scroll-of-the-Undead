@@ -1,16 +1,16 @@
 #include "Entity/PaperPlayer.h"
-#include <EnhancedInputSubsystems.h>
+#include "Map/LevelMapActor.h"
+#include "Map/LevelMapBuilder.h"
+#include "Component/CollectComponent.h"
 #include <EnhancedInputComponent.h>
-#include "PaperTileLayer.h"
-#include "PaperTileMap.h"
 #include <GameFramework/SpringArmComponent.h>
 #include <Camera/CameraComponent.h>
-#include "Component/CollectComponent.h"
 #include "PaperTileMapComponent.h"
-#include "Subsystem/ContextWorldSubsystem.h"
-#include "Map/LevelMapBuilder.h"
-#include "Map/LevelMapActor.h"
 #include "Components/BoxComponent.h"
+#include "PaperTileMap.h"
+#include "PaperTileLayer.h"
+#include "Subsystem/ContextWorldSubsystem.h"
+#include <EnhancedInputSubsystems.h>
 #include <Kismet/KismetSystemLibrary.h>
 
 // Sets default values

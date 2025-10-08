@@ -32,24 +32,37 @@ void ALevelMapBuilder::BeginPlay()
 {
 	Super::BeginPlay();
 
+	SetupVariables();
+	if (!data || !playerActor || !mapActor ) return;
+	PlaceMusic();
+	ParseAllData();
+
+	TObjectPtr<UPaperTileMap> _map = CreateInstanceTileMap(mapActor->GetRenderComponent());
+	TObjectPtr<UPaperTileMap> _collectMap = CreateInstanceTileMap(mapActor->GetCollectMapComponent());
+	CreateTileMapFromData(_map);
+	GenerateBackgroundLayer(_map);
+	CreateCollectibleMap(_collectMap);
+
+	PlaceMap(_map);
+	PlacePlayer(_map);
+	PlaceEnemyInMap(_map);
+}
+
+void ALevelMapBuilder::SetupVariables()
+{
 	ULevelSelectorGameSubsystem* _levelSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<ULevelSelectorGameSubsystem>();
 	if (!_levelSubsystem) return;
 	data = *mapDataAssets.Find(_levelSubsystem->GetCurrentLevel());
-
-	if (!data) return;
-	if (data->music && audioComponent)
-	{
-		audioComponent->SetSound(data->music);
-		audioComponent->Play();
-		audioComponent->bIsUISound = true;
-		audioComponent->bAllowSpatialization = false;
-	}
 	playerActor = GetWorld()->GetFirstPlayerController()->GetPawn();
 	mapActor = GetWorld()->SpawnActor<ALevelMapActor>(actorBlueprint, FVector::ZeroVector, FRotator::ZeroRotator);
 	GetWorld()->GetSubsystem<UContextWorldSubsystem>()->SetMapActor(this);
+}
+
+void ALevelMapBuilder::ParseAllData()
+{
 	TArray<FString> _out = ParseStringFromData(data->mapDataString);
 	int _lineCount = _out.Num();
-	for(int _i = 0; _i < _lineCount; _i++)
+	for (int _i = 0; _i < _lineCount; _i++)
 	{
 		if (_out[_i].StartsWith("TILE"))
 		{
@@ -57,7 +70,7 @@ void ALevelMapBuilder::BeginPlay()
 			_out[_i].ParseIntoArray(_temp, TEXT(" "), true);
 			if (collectibleList.Contains(_temp[1]))
 			{
-				
+
 				collectible.Add(_out[_i]);
 				continue;
 			}
@@ -71,37 +84,6 @@ void ALevelMapBuilder::BeginPlay()
 		{
 			enemy.Add(_out[_i]);
 		}
-	}
-
-	if (!mapActor) return;
-	TObjectPtr<UPaperTileMap> _map = CreateInstanceTileMap(mapActor->GetRenderComponent());
-	TObjectPtr<UPaperTileMap> _collectMap = CreateInstanceTileMap(mapActor->GetCollectMapComponent());
-	CreateTileMapFromData(_map);
-	GenerateBackgroundLayer(_map);
-	CreateCollectibleMap(_collectMap);
-	mapActor->GetRenderComponent()->RebuildCollision();
-	mapActor->GetCollectMapComponent()->RebuildCollision();
-	PlaceMap(_map);
-	PlacePlayer(_map);
-
-	for (int _i = 0; _i < enemy.Num(); _i++)
-	{
-		TArray<FString> _temp;
-		enemy[_i].ParseIntoArray(_temp, TEXT(" "), true);
-		if (_temp.Num() < 4) continue;
-		EEnemyType _type = EEnemyType::None;
-		if (_temp[1] == "Skeleton") _type = EEnemyType::Skeleton;
-		else if (_temp[1] == "Goblin") _type = EEnemyType::Goblin;
-		else if (_temp[1] == "Mushroom") _type = EEnemyType::Mushroom;
-		else if (_temp[1] == "FlyingEye") _type = EEnemyType::Winged;
-		if (_type == EEnemyType::None) continue;
-		TSubclassOf<APaperEnemy> _blueprint = *enemyBlueprints.Find(_type);
-		if (!_blueprint) continue;
-		TObjectPtr<APaperEnemy> _enemyActor = GetWorld()->SpawnActor<APaperEnemy>(_blueprint, FVector::ZeroVector, FRotator::ZeroRotator);
-		if (!_enemyActor) continue;
-		_enemyActor->SetActorRotation(FRotator(0, 0, 90));
-		FVector2D _spawnPos = FVector2D(FCString::Atoi(*_temp[2]), FCString::Atoi(*_temp[3]));
-		PlaceEntity(_enemyActor, _map, _spawnPos);
 	}
 }
 
@@ -186,11 +168,23 @@ FPaperTileInfo ALevelMapBuilder::GenerateTileInfo(const int& _index, const TObje
 	return _tileInfo;
 }
 
+void ALevelMapBuilder::PlaceMusic()
+{
+	if (!data->music || !audioComponent) return;
+
+	audioComponent->SetSound(data->music);
+	audioComponent->Play();
+	audioComponent->bIsUISound = true;
+	audioComponent->bAllowSpatialization = false;
+}
+
 void ALevelMapBuilder::PlaceMap(const TObjectPtr<UPaperTileMap>& _map)
 {
 	if (!mapActor) return;
 	mapActor->SetActorRotation(FRotator(0, 0, 90));
 	mapActor->SetActorLocation(FVector(0,_map->MapHeight * _map->TileHeight + _map->TileHeight/2,0));
+	mapActor->GetRenderComponent()->RebuildCollision();
+	mapActor->GetCollectMapComponent()->RebuildCollision();
 }
 
 void ALevelMapBuilder::PlacePlayer(const TObjectPtr<UPaperTileMap>& _map)
@@ -213,6 +207,29 @@ void ALevelMapBuilder::PlaceEntity(TObjectPtr<APaperCharacterActor> _actor, cons
 	FVector2D _spawnCord = FVector2D(_cords.X, _map->MapHeight * _map->TileHeight - _cords.Y);
 	_actor->SetActorLocation(FVector(_spawnCord, 0));
 	_actor->SetPosition(_spawnCord.X, _spawnCord.Y);
+}
+
+void ALevelMapBuilder::PlaceEnemyInMap(const TObjectPtr<UPaperTileMap>& _map)
+{
+	for (int _i = 0; _i < enemy.Num(); _i++)
+	{
+		TArray<FString> _temp;
+		enemy[_i].ParseIntoArray(_temp, TEXT(" "), true);
+		if (_temp.Num() < 4) continue;
+		EEnemyType _type = EEnemyType::None;
+		if (_temp[1] == "Skeleton") _type = EEnemyType::Skeleton;
+		else if (_temp[1] == "Goblin") _type = EEnemyType::Goblin;
+		else if (_temp[1] == "Mushroom") _type = EEnemyType::Mushroom;
+		else if (_temp[1] == "FlyingEye") _type = EEnemyType::Winged;
+		if (_type == EEnemyType::None) continue;
+		TSubclassOf<APaperEnemy> _blueprint = *enemyBlueprints.Find(_type);
+		if (!_blueprint) continue;
+		TObjectPtr<APaperEnemy> _enemyActor = GetWorld()->SpawnActor<APaperEnemy>(_blueprint, FVector::ZeroVector, FRotator::ZeroRotator);
+		if (!_enemyActor) continue;
+		_enemyActor->SetActorRotation(FRotator(0, 0, 90));
+		FVector2D _spawnPos = FVector2D(FCString::Atoi(*_temp[2]), FCString::Atoi(*_temp[3]));
+		PlaceEntity(_enemyActor, _map, _spawnPos);
+	}
 }
 
 // Called every frame

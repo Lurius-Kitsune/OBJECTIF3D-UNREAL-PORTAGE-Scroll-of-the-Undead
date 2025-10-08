@@ -18,31 +18,32 @@ class REVISIONP2_API ABaseEntity : public APawn
 	GENERATED_BODY()
 
 protected:
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Entity")
 	FString name = "BaseEntity";
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Entity")
 	EEntityType type = EEntityType::Base;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	int id = 0;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FVector2D position = FVector2D::ZeroVector;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	FVector2D positionOld = FVector2D::ZeroVector;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Entity")
 	FVector2D velocity = FVector2D::ZeroVector;
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Entity")
 	FVector2D maxVelocity = FVector2D(1000.0f, 1000.0f);
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Entity")
 	FVector2D speed = FVector2D(400.0f, 800.0f);
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Entity")
+	FVector2D position = FVector2D::ZeroVector;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Entity")
+	FVector2D positionOld = FVector2D::ZeroVector;
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Entity")
 	FVector2D acceleration = FVector2D(2000.0f, 0.0f);
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Entity")
 	FVector2D friction = FVector2D(800.0f, 0.0f);
-	UPROPERTY(EditAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Entity")
 	EEntityState state = EEntityState::Idle;
-	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Debug|Entity")
+	bool collidingOnX = false;
+
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly, Category = "Components")
 	TObjectPtr<UBoxComponent> hitbox;
-	UPROPERTY(EditAnywhere)
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Entity")
 	float zOffset = -2.0f;
 
 	// DebugMode
@@ -70,13 +71,10 @@ protected:
 	FOnStateChanged onStateChanged;
 
 
-	UPROPERTY()
-	bool collidingOnX = false;
 
 	// Subsystem
 	UPROPERTY()
 	TObjectPtr<UEntityManager> entityManager;
-
 	UPROPERTY()
 	TObjectPtr<UContextWorldSubsystem> contextManager;
 
@@ -96,6 +94,7 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+#pragma region Getters
 	UFUNCTION(BlueprintPure)
 	FORCEINLINE FVector2D GetPosition() const { return position; };
 	//UFUNCTION(BlueprintPure)
@@ -104,8 +103,6 @@ public:
 	EEntityState GetState() const { return state; }
 	UFUNCTION(BlueprintPure)
 	FString GetName() const { return name; }
-	UFUNCTION(BlueprintPure)
-	FORCEINLINE int GetID() const { return id; }
 	UFUNCTION(BlueprintPure)
 	EEntityType GetType() const { return type; }
 
@@ -117,18 +114,25 @@ public:
 	FORCEINLINE USoundBase* GetPickupSound2() const { return pickupSound2; }
 	UFUNCTION(BlueprintPure)
 	FORCEINLINE USoundBase* GetPickupSound3() const { return pickupSound3; }
+#pragma endregion
 
-
+#pragma region Setters
 	void SetPosition(float _x, float _y);
+	UFUNCTION(BlueprintCallable)
 	void SetPosition(const FVector2D& _pos);
+	UFUNCTION(BlueprintCallable)
 	void SetSize(float _x, float _y);
 	UFUNCTION(BlueprintCallable)
 	void SetState(const EEntityState _state);
+	UFUNCTION(BlueprintCallable)
+	void SetAcceleration(float _x, float _y);
+#pragma endregion
+
+
 
 	void Move(const FVector2D& _movement);
 	void AddVelocity(float _x, float _y);
 	void Accelerate(float _x, float _y);
-	void SetAcceleration(float _x, float _y);
 	void ApplyFriction(float _x, float _y);
 
 	UFUNCTION(BlueprintCallable)

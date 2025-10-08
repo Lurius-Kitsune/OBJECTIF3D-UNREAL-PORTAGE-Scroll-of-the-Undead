@@ -2,10 +2,10 @@
 
 
 #include "Entity/PaperCharacterActor.h"
-#include "Components/BoxComponent.h"
-#include "PaperFlipbookComponent.h"
-#include "PaperZDAnimationComponent.h"
 #include "InputActionValue.h"
+#include "PaperZDAnimationComponent.h"
+#include "PaperFlipbookComponent.h"
+#include "Components/BoxComponent.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 // Sets default values
@@ -26,9 +26,11 @@ void APaperCharacterActor::BeginPlay()
 {
 	Super::BeginPlay();
 	attackHitbox->SetCollisionEnabled(ECollisionEnabled::NoCollision);
-	bool _isHiddennGame = !debugMode;
-	attackHitbox->SetHiddenInGame(_isHiddennGame);
-	hitbox->SetHiddenInGame(_isHiddennGame);
+
+	// DebugMode
+	bool _isHiddenGame = !debugMode;
+	attackHitbox->SetHiddenInGame(_isHiddenGame);
+	hitbox->SetHiddenInGame(_isHiddenGame);
 }
 
 // Called every frame
@@ -53,7 +55,25 @@ void APaperCharacterActor::Tick(float DeltaTime)
 void APaperCharacterActor::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+}
 
+void APaperCharacterActor::SetDirection(const EEntityDirection& _dir)
+{
+	if (_dir != direction)
+	{
+		attackHitbox->SetRelativeLocation(attackHitbox->GetRelativeLocation() * FVector(-1, 1, 1));
+		onDirectionChanged.Broadcast(_dir);
+		direction = _dir;
+
+		if (debugMode) UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Direction changed"));
+	}
+}
+
+void APaperCharacterActor::ToogleAttackHitbox(const bool _enable)
+{
+	attackHitbox->SetCollisionEnabled(_enable ? ECollisionEnabled::QueryOnly : ECollisionEnabled::NoCollision);
+	
+	if (debugMode && _enable) UKismetSystemLibrary::DrawDebugBox(GetWorld(), attackHitbox->GetComponentLocation(), attackHitbox->GetScaledBoxExtent(), FColor::Red, FRotator::ZeroRotator, 1.0f, 2.0f);
 }
 
 void APaperCharacterActor::Move(const FInputActionValue& _value)
@@ -83,10 +103,11 @@ void APaperCharacterActor::Move(const EEntityDirection& _value)
 
 void APaperCharacterActor::Jump()
 {
-	if (debugMode) UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Jump"));
 	if (GetState() == EEntityState::Dying || GetState() == EEntityState::Jumping || GetState() == EEntityState::Hurt) { return; }
 	SetState(EEntityState::Jumping);
 	AddVelocity(0, jumpVelocity);
+
+	if (debugMode) UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Jump"));
 }
 
 void APaperCharacterActor::Attack()
@@ -115,22 +136,4 @@ void APaperCharacterActor::GetHurt(const int& _damage)
 		SetState(EEntityState::Dying);
 	}
 }
-
-void APaperCharacterActor::SetDirection(const EEntityDirection& _dir)
-{
-	if (_dir != direction)
-	{
-		if (debugMode) UKismetSystemLibrary::PrintString(GetWorld(), TEXT("Direction changed"));
-		attackHitbox->SetRelativeLocation(attackHitbox->GetRelativeLocation() * FVector(-1, 1, 1));
-		onDirectionChanged.Broadcast(_dir);
-		direction = _dir;
-	}
-}
-
-void APaperCharacterActor::ToogleAttackHitbox(const bool _enable)
-{
-	attackHitbox->SetCollisionEnabled(_enable ? ECollisionEnabled::QueryOnly : ECollisionEnabled::NoCollision);
-	if (debugMode && _enable) UKismetSystemLibrary::DrawDebugBox(GetWorld(), attackHitbox->GetComponentLocation(), attackHitbox->GetScaledBoxExtent(), FColor::Red, FRotator::ZeroRotator, 1.0f, 2.0f);
-}
-
 
