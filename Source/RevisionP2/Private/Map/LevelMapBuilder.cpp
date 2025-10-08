@@ -10,6 +10,7 @@
 #include "PaperTileLayer.h"
 #include "Map/LevelMapActor.h"
 #include "Subsystem/ContextWorldSubsystem.h"
+#include "Subsystem/LevelSelectorGameSubsystem.h"
 #include "Components/BillboardComponent.h"
 
 #include "Entity/PaperEnemy.h"
@@ -30,6 +31,11 @@ ALevelMapBuilder::ALevelMapBuilder()
 void ALevelMapBuilder::BeginPlay()
 {
 	Super::BeginPlay();
+
+	ULevelSelectorGameSubsystem* _levelSubsystem = GetWorld()->GetGameInstance()->GetSubsystem<ULevelSelectorGameSubsystem>();
+	if (!_levelSubsystem) return;
+	data = *mapDataAssets.Find(_levelSubsystem->GetCurrentLevel());
+
 	if (!data) return;
 	if (data->music && audioComponent)
 	{

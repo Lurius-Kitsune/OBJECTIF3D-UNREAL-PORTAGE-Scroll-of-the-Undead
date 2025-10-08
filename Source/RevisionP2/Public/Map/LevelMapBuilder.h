@@ -14,6 +14,7 @@ class UAudioComponent;
 class ALevelMapActor;
 class APaperEnemy;
 class APaperCharacterActor;
+enum class ELevelType : uint8;
 struct FPaperTileInfo;
 
 UENUM(BlueprintType)
@@ -41,6 +42,9 @@ protected:
 
 	UPROPERTY(EditAnywhere)
 	TObjectPtr<UBillboardComponent> icon;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Map")
+	TMap<ELevelType, TObjectPtr<UMapDataAssets>> mapDataAssets;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite, Category = "Map")
 	TObjectPtr<UMapDataAssets> data;
