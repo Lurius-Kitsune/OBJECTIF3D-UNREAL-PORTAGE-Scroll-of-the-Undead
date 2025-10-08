@@ -14,7 +14,7 @@ class APaperEnemy;
 class APaperCharacterActor;
 enum class ELevelType : uint8;
 struct FPaperTileInfo;
-
+class UBillboardComponent;
 class UPaperTileMapComponent;
 class UAudioComponent;
 
