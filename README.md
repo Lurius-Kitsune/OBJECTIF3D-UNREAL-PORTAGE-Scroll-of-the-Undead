@@ -137,7 +137,7 @@ For inquiries, feedback, or bug reports:
 
 ## 🎨 Screenshots / Media
 
-![Gameplay Screenshot](./Content/Images/screenshot1.png)
+![Gameplay Screenshot](./gameplayScreen.png)
 
 ---
 
