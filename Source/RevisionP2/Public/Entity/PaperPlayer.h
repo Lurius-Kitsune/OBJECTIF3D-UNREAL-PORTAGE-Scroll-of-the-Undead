@@ -44,6 +44,8 @@ protected:
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 	TObjectPtr<UCameraComponent> camera = nullptr;
 
+	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
+	TObjectPtr<UStaticMeshComponent> backgroundImageComponent = nullptr;
 
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UCollectComponent> collectComponent = nullptr;
@@ -57,6 +59,8 @@ protected:
 	virtual void BeginPlay() override;
 
 	virtual void Init();
+	
+	void SetupBackgroundImage();
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -67,4 +71,6 @@ public:
 
 	UFUNCTION(BlueprintCallable)
 	virtual void OnHitboxCollision(UPrimitiveComponent* _me, AActor* _other, UPrimitiveComponent* _otherComp, int32 _otherBodyIndex, bool _fromSweep, const FHitResult& _sweepResult);
+
+	
 };

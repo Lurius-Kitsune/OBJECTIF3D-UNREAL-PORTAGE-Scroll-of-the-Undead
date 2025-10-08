@@ -23,6 +23,9 @@ public:
 	TObjectPtr<USoundBase> music = nullptr;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Map")
+	TObjectPtr<UTexture2D> backgroundImage = nullptr;
+
+	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Map")
 	FVector2D mapSize = FVector2D::ZeroVector;
 
 	UPROPERTY(EditAnywhere, BlueprintReadOnly, Category = "Map")

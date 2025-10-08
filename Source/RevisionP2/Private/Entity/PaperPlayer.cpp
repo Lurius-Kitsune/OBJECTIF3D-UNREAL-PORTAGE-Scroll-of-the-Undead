@@ -25,9 +25,10 @@ APaperPlayer::APaperPlayer()
 
 	springarm = CreateDefaultSubobject<USpringArmComponent>(TEXT("SpringArm"));
 	camera = CreateDefaultSubobject<UCameraComponent>(TEXT("Camera"));
+	backgroundImageComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("BackgroundImage"));
 	springarm->SetupAttachment(hitbox);
 	camera->SetupAttachment(springarm);
-
+	backgroundImageComponent->SetupAttachment(camera);
 	collectComponent = CreateDefaultSubobject<UCollectComponent>(TEXT("CollectComponent"));
 
 
@@ -45,6 +46,7 @@ void APaperPlayer::BeginPlay()
 {
 	Super::BeginPlay();
 	Init();
+	SetupBackgroundImage();
 }
 
 void APaperPlayer::Init()
@@ -64,18 +66,24 @@ void APaperPlayer::Init()
 	hitbox->OnComponentBeginOverlap.AddDynamic(this, &APaperPlayer::OnHitboxCollision);
 }
 
+void APaperPlayer::SetupBackgroundImage()
+{
+	TObjectPtr<UTexture2D> _backgroundImage = contextManager->GetMapActor()->GetMapData()->backgroundImage;
+	if (!_backgroundImage) return;
+	UMaterialInstanceDynamic* _mat = backgroundImageComponent->CreateAndSetMaterialInstanceDynamic(0);
+	if (!_mat) return;
+	_mat->SetTextureParameterValue(FName("Texture"), _backgroundImage);
+	UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("Background Image Set")), true, true, FLinearColor::Green);
+}
+
+
 // Called every frame
 void APaperPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 	//get size of the view for test
-	UContextWorldSubsystem* contextManager = GetWorld()->GetSubsystem<UContextWorldSubsystem>();
-	if (!contextManager) return;
-	FMinimalViewInfo _cameraView;
-	camera->GetCameraView(DeltaTime, _cameraView);
-	float _viewWidth = _cameraView.FOV;
-	float _viewHeight = camera->AspectRatio;
+
 	
 	//FVector _cameraView = camera->GetComponentLocation();
 	/*FMinimalViewInfo _cameraView;
@@ -145,7 +153,8 @@ void APaperPlayer::OnHitboxCollision(UPrimitiveComponent* _me, AActor* _other, U
 	TObjectPtr<UPaperTileMapComponent> _timeMapComponent = Cast<UPaperTileMapComponent>(_otherComp);
 	if (!_timeMapComponent) return;
 	TObjectPtr<UPaperTileMap> _tileMap = _timeMapComponent->TileMap;
-	int _x, _y = 0;
+	int _x = 0;
+	int _y = 0;
 	FVector _relativePlayerTransform = _timeMapComponent->GetComponentTransform().InverseTransformPosition(_me->GetComponentLocation());
 	_tileMap->GetTileCoordinatesFromLocalSpacePosition(_relativePlayerTransform, _x, _y);
 	if(debugMode) UKismetSystemLibrary::PrintString(GetWorld(), FString::Printf(TEXT("Player Pos in Tile X: %i Y: %i"), _x, _y));
