@@ -68,6 +68,14 @@ void APaperPlayer::Init()
 void APaperPlayer::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+
+	//get size of the view for test
+	UContextWorldSubsystem* contextManager = GetWorld()->GetSubsystem<UContextWorldSubsystem>();
+	if (!contextManager) return;
+	FMinimalViewInfo _cameraView;
+	camera->GetCameraView(DeltaTime, _cameraView);
+	float _viewWidth = _cameraView.FOV;
+	float _viewHeight = camera->AspectRatio;
 	
 	//FVector _cameraView = camera->GetComponentLocation();
 	/*FMinimalViewInfo _cameraView;

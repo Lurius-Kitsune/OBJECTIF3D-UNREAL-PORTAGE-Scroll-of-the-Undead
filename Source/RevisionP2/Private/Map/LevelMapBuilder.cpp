@@ -86,6 +86,8 @@ void ALevelMapBuilder::BeginPlay()
 		EEnemyType _type = EEnemyType::None;
 		if (_temp[1] == "Skeleton") _type = EEnemyType::Skeleton;
 		else if (_temp[1] == "Goblin") _type = EEnemyType::Goblin;
+		else if (_temp[1] == "Mushroom") _type = EEnemyType::Mushroom;
+		else if (_temp[1] == "FlyingEye") _type = EEnemyType::Winged;
 		if (_type == EEnemyType::None) continue;
 		TSubclassOf<APaperEnemy> _blueprint = *enemyBlueprints.Find(_type);
 		if (!_blueprint) continue;
