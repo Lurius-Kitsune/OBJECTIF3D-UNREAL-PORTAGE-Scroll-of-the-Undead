@@ -13,4 +13,4 @@ ALevelMapActor::ALevelMapActor()
 
 FVector2D ALevelMapActor::GetMapSize() const { return FVector2D(GetRenderComponent()->TileMap->MapWidth, GetRenderComponent()->TileMap->MapHeight); }
 
-FVector2D ALevelMapActor::GetRealMapSize() const { return GetMapSize() * FVector2D(GetRenderComponent()->TileMap->TileWidth - 0.5, GetRenderComponent()->TileMap->TileHeight); }
+FVector2D ALevelMapActor::GetRealMapSize() const { return GetMapSize() * FVector2D(GetRenderComponent()->TileMap->TileWidth, GetRenderComponent()->TileMap->TileHeight) - FVector2D(32, 32); }

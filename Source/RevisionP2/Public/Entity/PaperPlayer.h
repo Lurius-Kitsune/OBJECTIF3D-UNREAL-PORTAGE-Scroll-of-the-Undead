@@ -27,6 +27,16 @@ struct FPlayerInputData
 	TObjectPtr<UInputAction> attackAction = nullptr;
 };
 
+USTRUCT(BlueprintType)
+struct FCameraDetails
+{
+	GENERATED_BODY()
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector2D  maxCameraOffset;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FVector2D  minCameraOffset;
+};
 
 UCLASS()
 class REVISIONP2_API APaperPlayer : public APaperCharacterActor
@@ -50,6 +60,9 @@ protected:
 	UPROPERTY(VisibleAnywhere, BlueprintReadOnly)
 	TObjectPtr<UCollectComponent> collectComponent = nullptr;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+	FCameraDetails cameraDetails;
+
 public:
 	// Sets default values for this pawn's properties
 	APaperPlayer();
@@ -59,8 +72,10 @@ protected:
 	virtual void BeginPlay() override;
 
 	virtual void Init();
-	
 	void SetupBackgroundImage();
+
+	void SetupCamera();
+	void UpdateCameraPosition();
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
